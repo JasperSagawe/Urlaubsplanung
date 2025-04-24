@@ -8,6 +8,8 @@ public class UrlaubsplanungApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(UrlaubsplanungApplication.class, args);
+		
+		
 	}
 
 }
