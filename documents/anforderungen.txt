@@ -1,0 +1,23 @@
+Urlaubsplanung
+
+Rahmenthema: Planen und Realisieren Sie eine Anwendung mit der Mitarbeiter*innen eines Unternehmens Urlaubsanträge einreichen,
+genehmigen, verwalten und einsehen können.
+
+ANF 1: In der Anwendung soll eine Firma die Möglichkeit haben, eine Liste von Mitarbeiter*innen zu führen.
+Für Mitarbeiter*innen eines Unternehmens soll die Möglichkeit bestehen, einen Urlaubswunsch
+anzugeben. Urlaubswünsche sind Zeiträumen zuzuordnen.
+
+ANF 2: Die Anwendung soll auf Basis eines angegebenen Zeitraums automatisch ausrechnen, wie viele
+Arbeitstage der Mitarbeiter*in im Urlaub ist. Für jeden Mitarbeiter*in speichert das Unternehmen die
+verfügbaren Urlaubstage im aktuellen Kalenderjahr und evtl. übernommene Urlaubstage aus dem
+Vorjahr. Das Programm soll sicherstellen, dass Mitarbeiter*innen nicht mehr Urlaub nehmen, als
+ihnen Tage zur Verfügung stehen.
+
+ANF 3: Mitarbeiter*innen lassen sich Abteilungen / Teams zuordnen. Für jedes Team / jede Abteilung soll das
+Programm zeigen, wie viele Mitarbeiter*innen in einem bestimmten Zeitraum im Urlaub sind. Das
+Programm soll sicherstellen, dass pro Team/Abteilung in einem Zeitraum max. 35% im Urlaub sind.
+
+ANF 4 (Optional): Urlaubsanträge sollen einen Genehmigungsprozess durlaufen. Der Urlaubsantrag eines
+Mitarbeiter*ins wird dem Vorgesetzten (zur jeweiligen Abteilung, zum jeweiligen Team) zur
+Genehmigung vorgelegt. Erst sobald der/die Vorgesetzte die Genehmigung ausgesprochen hat, wird
+im System der Status „Freigegeben“ vermerkt

@@ -1,0 +1,32 @@
+Durchführung eines kompletten Projektes, inkl. 
+−Voranalyse 
+−Projektmanagement 
+−Requirements Engineering 
+−Lösungsentwurf 
+−Umsetzung 
+−Qualitätssicherung
+
+
+Hauptpunkte des Referats:
+-Requirements Engineering
+• Präzision der Anforderungen
+• Aufdecken und Auflösen von Widersprüchen
+
+-Entwurf
+• Vorstellung der Lösungsarchitektur
+• Zukunftstauglichkeit der Lösung
+
+-Implementation
+• Tauglichkeit und Qualität der entwickelten Software
+• Besondere Stellen im Quellcode
+• Demonstration der lauffähigen Software
+
+-Qualitätssicherung
+• Güte ergriffener Präventionen zur Vermeidung von Fehlern
+
+-Projektmanagement
+• Güte der gewählten Vorgehensweise
+• Qualität der Selbstreflexion und des Lernerfolgs
+
+-Vorgehensmodell
+• kritische Reflexion des gewählten Vorgehensmodells
