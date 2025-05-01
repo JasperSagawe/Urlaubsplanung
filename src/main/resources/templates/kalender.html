@@ -4,6 +4,8 @@
     <meta charset="ISO-8859-1" />
     <title>Kalender</title>
     <link rel="stylesheet" type="text/css" href="/styles.css" />
+    <script src="/js/index.global.js"></script>
+    <script src="/js/kalender.js"></script>
   </head>
   <form action="/logout" method="post">
     <input
@@ -15,5 +17,5 @@
   </form>
   <a th:href="@{/}">Startseite</a>
 
-  <div>Hier wird ein Kalender angezeigt.</div>
+  <div id="kalender"></div>
 </html>
