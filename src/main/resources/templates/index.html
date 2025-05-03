@@ -5,6 +5,14 @@
     <title>Urlaubsplanung</title>
     <link rel="stylesheet" type="text/css" href="/styles.css" />
   </head>
+  <form action="/logout" method="post">
+    <input
+      type="hidden"
+      th:name="${_csrf.parameterName}"
+      th:value="${_csrf.token}"
+    />
+    <button type="submit">Logout</button>
+  </form>
   <div sec:authorize="hasRole('ADMIN')">
     Dies ist nur für Admins Sichtbar: <a th:href="@{/admin}">Admin</a>
   </div>
