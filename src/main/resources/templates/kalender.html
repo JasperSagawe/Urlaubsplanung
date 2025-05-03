@@ -17,7 +17,24 @@
       <button type="submit">Logout</button>
     </form>
     <a th:href="@{/}">Startseite</a>
-
     <div id="kalender"></div>
+
+    <dialog id="eventDialog">
+      <form id="eventForm" method="dialog">
+        <label for="eventName">Bezeichnung:</label>
+        <input type="text" id="eventName" name="eventName" required />
+
+        <label for="startDate">Startdatum:</label>
+        <input type="date" id="startDate" name="startDate" required />
+
+        <label for="endDate">Enddatum:</label>
+        <input type="date" id="endDate" name="endDate" required />
+
+        <div>
+          <button type="submit">Einreichen</button>
+          <button type="button" id="cancel">Abbrechen</button>
+        </div>
+      </form>
+    </dialog>
   </body>
 </html>
