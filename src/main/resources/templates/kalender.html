@@ -2,7 +2,7 @@
 <html xmlns:th="https://www.thymleaf.org">
   <head>
     <meta charset="ISO-8859-1" />
-    <title>Urlaubsplanung</title>
+    <title>Kalender</title>
     <link rel="stylesheet" type="text/css" href="/styles.css" />
   </head>
   <body>
@@ -14,18 +14,8 @@
       />
       <button type="submit">Logout</button>
     </form>
-    <div sec:authorize="hasRole('ADMIN')">
-      Dies ist nur für Admins Sichtbar:
-      <a th:href="@{/verwaltung}">Verwaltung</a>
-    </div>
+    <a th:href="@{/}">Startseite</a>
 
-    Das ist einfach die Startseite.
-
-    <p>Willkommen, <span th:text="${#authentication.name}">User</span>!</p>
-
-    <div>
-      Weiterleitung zum Kalender zum testen.
-      <a th:href="@{/kalender}">Kalender</a>
-    </div>
+    <div>Hier wird ein Kalender angezeigt.</div>
   </body>
 </html>
