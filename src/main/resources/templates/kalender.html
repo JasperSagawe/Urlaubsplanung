@@ -4,6 +4,8 @@
     <meta charset="ISO-8859-1" />
     <title>Kalender</title>
     <link rel="stylesheet" type="text/css" href="/styles.css" />
+    <script src="/js/index.global.js"></script>
+    <script src="/js/kalender.js"></script>
   </head>
   <body>
     <form action="/logout" method="post">
@@ -15,7 +17,29 @@
       <button type="submit">Logout</button>
     </form>
     <a th:href="@{/}">Startseite</a>
+    <div id="kalender"></div>
 
-    <div>Hier wird ein Kalender angezeigt.</div>
+    <dialog id="eventDialog">
+      <form id="eventForm" method="dialog">
+        <label for="eventName">Bezeichnung:</label>
+        <input type="text" id="eventName" name="eventName" required />
+
+        <label for="startDate">Startdatum:</label>
+        <input type="date" id="startDate" name="startDate" required />
+
+        <label for="endDate">Enddatum:</label>
+        <input type="date" id="endDate" name="endDate" required />
+        <span
+          id="endDateError"
+          style="color: red; font-size: 0.9em; display: none"
+          >Das Enddatum muss nach dem Startdatum sein.</span
+        >
+
+        <div>
+          <button type="submit">Einreichen</button>
+          <button type="button" id="cancel">Abbrechen</button>
+        </div>
+      </form>
+    </dialog>
   </body>
 </html>
