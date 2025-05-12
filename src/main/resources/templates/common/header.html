@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymleaf.org">
+  <body>
+    <div th:fragment="header(titel)">
+      <div class="navigation">
+        <h1 class="logo" th:text="${titel}">Titel</h1>
+        <div class="navToggle" onclick="toggleNavigation()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="navMenu">
+          <a th:href="@{/}">Startseite</a>
+          <a th:href="@{/kalender}">Kalender</a>
+          <a
+            th:href="@{/verwaltung}"
+            class="test"
+            sec:authorize="hasRole('ADMIN')"
+            >Verwaltung</a
+          >
+          <a
+            href="#"
+            onclick="document.getElementById('logoutForm').submit(); return false;"
+            >Logout</a
+          >
+        </div>
+        <form
+          id="logoutForm"
+          th:action="@{/logout}"
+          method="post"
+          style="display: none"
+        >
+          <input
+            type="hidden"
+            th:name="${_csrf.parameterName}"
+            th:value="${_csrf.token}"
+          />
+        </form>
+      </div>
+      <script src="/js/navigation.js"></script>
+    </div>
+  </body>
+</html>

@@ -6,19 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/styles.css" />
   </head>
   <body>
-    <form action="/logout" method="post">
-      <input
-        type="hidden"
-        th:name="${_csrf.parameterName}"
-        th:value="${_csrf.token}"
-      />
-      <button type="submit">Logout</button>
-    </form>
-    <div sec:authorize="hasRole('ADMIN')">
-      Dies ist nur für Admins Sichtbar:
-      <a th:href="@{/verwaltung}">Verwaltung</a>
-    </div>
-
+    <div th:replace="~{common/header :: header('Startseite')}"></div>
     Das ist einfach die Startseite.
 
     <p>Willkommen, <span th:text="${#authentication.name}">User</span>!</p>

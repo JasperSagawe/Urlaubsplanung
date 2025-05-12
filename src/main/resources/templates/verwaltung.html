@@ -6,16 +6,7 @@
     <link rel="stylesheet" type="text/css" href="/styles.css" />
   </head>
   <body>
-    <form action="/logout" method="post">
-      <input
-        type="hidden"
-        th:name="${_csrf.parameterName}"
-        th:value="${_csrf.token}"
-      />
-      <button type="submit">Logout</button>
-    </form>
-    <a th:href="@{/}">Startseite</a>
-
+    <div th:replace="~{common/header :: header('Verwaltung')}"></div>
     <div sec:authorize="!hasRole('ADMIN')">
       Nur Admins haben Zugriff auf diese Seite.
     </div>
