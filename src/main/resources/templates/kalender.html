@@ -11,6 +11,25 @@
     <div th:replace="~{common/header :: header('Kalender')}"></div>
     <div id="kalender"></div>
 
+    <table>
+      <thead>
+      <tr>
+        <th>Urlaubstage aus dem Vorjahr</th>
+        <th>Freie Urlaubstage</th>
+        <th>Beantragte Urlaubstage</th>
+        <th>Genommene Urlaubstage</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td th:text="${user.urlaubstage}"></td>
+        <td th:text="${user.resturlaub}"></td>
+        <td th:text="${user.urlaubstage}"></td>
+        <td th:text="${user.resturlaub}"></td>
+      </tr>
+      </tbody>
+    </table>
+
     <dialog id="eventDialog">
       <form id="eventForm" method="dialog">
         <label for="eventName">Bezeichnung:</label>
