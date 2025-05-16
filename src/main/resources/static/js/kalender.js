@@ -1,40 +1,76 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var calendarEl = document.getElementById("kalender");
-  var dialog = document.getElementById("eventDialog");
-  var form = document.getElementById("eventForm");
-  var endDateInput = form.endDate;
-  var startDateInput = form.startDate;
-  var endDateError = document.getElementById("endDateError");
+  const calendarEl = document.getElementById("kalender");
+  const dialog = document.getElementById("eventDialog");
+  const form = document.getElementById("eventForm");
+  const endDateInput = form.endDate;
+  const startDateInput = form.startDate;
+  const endDateError = document.getElementById("endDateError");
+  const cancelBtn = document.getElementById("cancel");
 
-  var calendar = new FullCalendar.Calendar(calendarEl, {
+  const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: "dayGridMonth",
-    dateClick: function (info) {
-      dialog.showModal();
-      form.startDate.value = info.dateStr;
-      form.endDate.value = info.dateStr;
-      endDateError.style.display = "none";
-      endDateInput.style.borderColor = "";
+    dateClick: handleDateClick,
+    locale: "de",
+    firstDay: 1,
+    buttonText: {
+      today: "Heute",
     },
   });
 
-  function validateDateInputs() {
-    if (new Date(endDateInput.value) < new Date(startDateInput.value)) {
-      endDateError.style.display = "block";
-      endDateInput.style.borderColor = "red";
-    } else {
-      endDateError.style.display = "none";
-      endDateInput.style.borderColor = "";
-    }
-  }
+  loadEvents();
 
   endDateInput.addEventListener("input", validateDateInputs);
   startDateInput.addEventListener("input", validateDateInputs);
+  form.addEventListener("submit", handleFormSubmit);
+  cancelBtn.addEventListener("click", () => dialog.close());
 
-  form.addEventListener("submit", function (event) {
+  calendar.render();
+
+  function handleDateClick(info) {
+    dialog.showModal();
+    form.startDate.value = info.dateStr;
+    form.endDate.value = info.dateStr;
+    resetEndDateError();
+  }
+
+  function loadEvents() {
+    fetch("/kalender/urlaubstage")
+      .then((response) => response.json())
+      .then((data) => {
+        data.forEach((event) => {
+          calendar.addEvent({
+            title: event.eventName,
+            start: event.startDate,
+            end: event.endDate,
+          });
+        });
+      })
+      .catch((error) => {
+        console.error("Fehler beim Laden der Urlaubstage:", error);
+      });
+  }
+
+  function validateDateInputs() {
+    const start = new Date(startDateInput.value);
+    const end = new Date(endDateInput.value);
+    if (end < start) {
+      endDateError.style.display = "block";
+      endDateInput.style.borderColor = "red";
+    } else {
+      resetEndDateError();
+    }
+  }
+
+  function resetEndDateError() {
+    endDateError.style.display = "none";
+    endDateInput.style.borderColor = "";
+  }
+
+  function handleFormSubmit(event) {
     event.preventDefault();
-    var title = form.eventName.value;
-    var start = form.startDate.value;
-    var end = form.endDate.value;
+    const title = form.eventName.value;
+    const start = form.startDate.value;
+    const end = form.endDate.value;
 
     if (new Date(start) > new Date(end)) {
       alert("Das Enddatum muss nach dem Startdatum sein.");
@@ -42,20 +78,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (title && start) {
-      calendar.addEvent({
-        title: title,
-        start: start,
-        end: end,
-      });
+      calendar.addEvent({ title, start, end });
     }
 
     dialog.close();
     form.reset();
-  });
-
-  document.getElementById("cancel").addEventListener("click", function () {
-    dialog.close();
-  });
-
-  calendar.render();
+  }
 });
