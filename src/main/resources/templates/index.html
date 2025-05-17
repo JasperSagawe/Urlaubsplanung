@@ -7,9 +7,18 @@
   </head>
   <body>
     <div th:replace="~{common/header :: header('Startseite')}"></div>
-    Das ist einfach die Startseite.
+    <p>
+      Willkommen,
+      <span
+        th:with="user=${#authentication.principal}"
+        th:text="${user.mitarbeiter.vorname} + ' ' + ${user.mitarbeiter.nachname}"
+        >User</span
+      >!
+    </p>
 
-    <p>Willkommen, <span th:text="${#authentication.name}">User</span>!</p>
+    <p>E-Mail: <span th:text="${#authentication.name}">EMail</span></p>
+
+    Das ist einfach die Startseite.
 
     <div>
       Weiterleitung zum Kalender zum testen.

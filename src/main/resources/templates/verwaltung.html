@@ -7,11 +7,11 @@
   </head>
   <body>
     <div th:replace="~{common/header :: header('Verwaltung')}"></div>
-    <div sec:authorize="!hasRole('ADMIN')">
+    <div sec:authorize="!hasRole('SUPER_ADMIN')">
       Nur Admins haben Zugriff auf diese Seite.
     </div>
 
-    <div sec:authorize="hasRole('ADMIN')">Seite für Admins.</div>
+    <div sec:authorize="hasRole('SUPER_ADMIN')">Seite für Admins.</div>
 
     <div>
       Wird im Weiteren Verlauf in Mitarbeiter- und Abteilungsverwaltung
