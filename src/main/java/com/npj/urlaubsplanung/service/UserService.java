@@ -5,11 +5,15 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.npj.urlaubsplanung.dto.UserDto;
+import com.npj.urlaubsplanung.repository.MitarbeiterRepository;
 
 @Service
 public class UserService {
 
-	public UserService() {
+	private MitarbeiterRepository mitarbeiterRepository;
+
+	public UserService(MitarbeiterRepository mitarbeiterRepository) {
+		this.mitarbeiterRepository = mitarbeiterRepository;
 	}
 
 	public Iterable<UserDto> getUser() {
@@ -17,7 +21,9 @@ public class UserService {
 				new UserDto("Charlie", "Brown", 12, 18));
 	}
 
-	public UserDto getUserById() {
-		return new UserDto("Alice", "Krüger", 24, 6);
+	public UserDto getUserByEMail(String email) {
+		return this.mitarbeiterRepository.findByEmail(email)
+				.map(mitarbeiter -> new UserDto(mitarbeiter.getVorname(), mitarbeiter.getNachname(), 13, 4))
+				.orElse(null);
 	}
 }
