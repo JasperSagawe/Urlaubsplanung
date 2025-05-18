@@ -40,10 +40,10 @@
           </thead>
           <tbody>
             <tr>
-              <td th:text="${user.urlaubstage}"></td>
-              <td th:text="${user.resturlaub}"></td>
-              <td th:text="${user.urlaubstage}"></td>
-              <td th:text="${user.resturlaub}"></td>
+              <td th:text="${user.urlaubVorjahr}"></td>
+              <td th:text="${user.offeneUrlaubstage}"></td>
+              <td th:text="${user.beantragteUrlaubstage}"></td>
+              <td th:text="${user.genommeneUrlaubstage}"></td>
             </tr>
           </tbody>
         </table>
@@ -54,17 +54,19 @@
               <th>Bezeichnung</th>
               <th>Startdatum</th>
               <th>Enddatum</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
             <tr th:each="urlaubstag: ${urlaubstage}">
-              <td th:text="${urlaubstag.eventName}" />
+              <td th:text="${urlaubstag.eventName}"></td>
               <td
                 th:text="${#temporals.format(urlaubstag.startDate, 'dd.MM.yyyy')}"
-              />
+              ></td>
               <td
                 th:text="${#temporals.format(urlaubstag.endDate, 'dd.MM.yyyy')}"
-              />
+              ></td>
+              <td th:text="${urlaubstag.status.getDisplayName()}"></td>
             </tr>
           </tbody>
         </table>

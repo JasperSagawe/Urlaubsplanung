@@ -7,11 +7,13 @@ public class UrlaubstagDto {
 	private String eventName;
 	private LocalDate startDate;
 	private LocalDate endDate;
+	private StatusDto status;
 
-	public UrlaubstagDto(String eventName, LocalDate startDate, LocalDate endDate) {
+	public UrlaubstagDto(String eventName, LocalDate startDate, LocalDate endDate, StatusDto status) {
 		this.eventName = eventName;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.status = status;
 	}
 
 	public String getEventName() {
@@ -36,5 +38,13 @@ public class UrlaubstagDto {
 
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
+	}
+
+	public StatusDto getStatus() {
+		return status;
+	}
+
+	public void setStatus(StatusDto status) {
+		this.status = status;
 	}
 }
