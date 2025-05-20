@@ -10,7 +10,6 @@ import com.npj.urlaubsplanung.repository.MitarbeiterRepository;
 import com.npj.urlaubsplanung.repository.MitarbeiterdatenRepository;
 import com.npj.urlaubsplanung.repository.UrlaubsantragRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,14 +30,31 @@ public class UrlaubstagService {
 		this.urlaubsantragRepository = urlaubsantragRepository;
 	}
 
-	public Iterable<UrlaubstagDto> getUrlaubstag() {
-		LocalDate aliceDate = LocalDate.now();
-		LocalDate bobDate = LocalDate.now().plusDays(7);
-		LocalDate charlieDate = LocalDate.now().minusDays(4);
+	public List<UrlaubstagDto> getUrlaubstage() {
+		List<Urlaubsantrag> urlaubsantraege = this.urlaubsantragRepository.findAll();
 
-		return List.of(new UrlaubstagDto("Urlaub - Alice", aliceDate, aliceDate.plusDays(2), StatusDto.BEANTRAGT),
-				new UrlaubstagDto("Urlaub - Bob", bobDate, bobDate.plusDays(3), StatusDto.BEANTRAGT),
-				new UrlaubstagDto("Urlaub - Charlie", charlieDate, charlieDate, StatusDto.BEANTRAGT));
+		return urlaubsantraege.stream().map(antrag -> {
+			StatusDto statusText;
+			switch (antrag.getStatus()) {
+			case 0:
+				statusText = StatusDto.BEANTRAGT;
+				break;
+			case 1:
+				statusText = StatusDto.GENEHMIGT;
+				break;
+			case 2:
+				statusText = StatusDto.ABGELEHNT;
+				break;
+			case 3:
+				statusText = StatusDto.STORNIERT;
+				break;
+			default:
+				statusText = StatusDto.BEANTRAGT;
+			}
+			Mitarbeiter mitarbeiter = antrag.getMitarbeiter();
+			String mitarbeiterName = "Urlaub - " + mitarbeiter.getVorname() + " " + mitarbeiter.getNachname();
+			return new UrlaubstagDto(mitarbeiterName, antrag.getStartDatum(), antrag.getEndDatum(), statusText);
+		}).toList();
 	}
 
 	public UrlaubsdatenDto getUrlaubsdaten(String email) {
@@ -58,7 +74,7 @@ public class UrlaubstagService {
 		List<Urlaubsantrag> urlaubsantraege = this.urlaubsantragRepository.findByMitarbeiter(mitarbeiter);
 
 		List<UrlaubstagDto> urlaubstage = urlaubsantraege.stream().map(antrag -> {
-			StatusDto statusText = StatusDto.BEANTRAGT;
+			StatusDto statusText;
 			switch (antrag.getStatus()) {
 			case 0:
 				statusText = StatusDto.BEANTRAGT;
@@ -74,6 +90,8 @@ public class UrlaubstagService {
 			case 3:
 				statusText = StatusDto.STORNIERT;
 				break;
+			default:
+				statusText = StatusDto.BEANTRAGT;
 			}
 			return new UrlaubstagDto("Urlaub", antrag.getStartDatum(), antrag.getEndDatum(), statusText);
 		}).toList();
