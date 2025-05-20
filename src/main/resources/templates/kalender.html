@@ -4,12 +4,72 @@
     <meta charset="ISO-8859-1" />
     <title>Kalender</title>
     <link rel="stylesheet" type="text/css" href="/styles.css" />
+    <style>
+      .flex {
+        display: flex;
+        width: 100vw;
+        align-items: flex-start;
+      }
+
+      .zwei-drittel {
+        flex: 2;
+        height: 45vw;
+      }
+
+      .ein-drittel {
+        flex: 1;
+      }
+    </style>
     <script src="/js/index.global.js"></script>
     <script src="/js/kalender.js"></script>
   </head>
   <body>
     <div th:replace="~{common/header :: header('Kalender')}"></div>
-    <div id="kalender"></div>
+    <div class="flex">
+      <div class="zwei-drittel" id="kalender"></div>
+
+      <div class="ein-drittel">
+        <table>
+          <thead>
+            <tr>
+              <th>Urlaubstage aus dem Vorjahr</th>
+              <th>Freie Urlaubstage</th>
+              <th>Beantragte Urlaubstage</th>
+              <th>Genommene Urlaubstage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td th:text="${user.urlaubstage}"></td>
+              <td th:text="${user.resturlaub}"></td>
+              <td th:text="${user.urlaubstage}"></td>
+              <td th:text="${user.resturlaub}"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Bezeichnung</th>
+              <th>Startdatum</th>
+              <th>Enddatum</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="urlaubstag: ${urlaubstage}">
+              <td th:text="${urlaubstag.eventName}" />
+              <td
+                th:text="${#temporals.format(urlaubstag.startDate, 'dd.MM.yyyy')}"
+              />
+              <td
+                th:text="${#temporals.format(urlaubstag.endDate, 'dd.MM.yyyy')}"
+              />
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
     <dialog id="eventDialog">
       <form id="eventForm" method="dialog">
