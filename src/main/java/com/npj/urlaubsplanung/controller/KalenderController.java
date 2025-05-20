@@ -35,6 +35,6 @@ class KalenderController {
 	@ResponseBody
 	@GetMapping("/urlaubstage")
 	public Iterable<UrlaubstagDto> getUrlaubstage() {
-		return urlaubstagService.getUrlaubstag();
+		return urlaubstagService.getUrlaubstage();
 	}
 }
