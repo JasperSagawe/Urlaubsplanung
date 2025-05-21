@@ -6,15 +6,18 @@ document.addEventListener("DOMContentLoaded", function () {
   const startDateInput = form.startDate;
   const endDateError = document.getElementById("endDateError");
   const cancelBtn = document.getElementById("cancel");
-  const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-  const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+  const csrfToken = document
+    .querySelector('meta[name="_csrf"]')
+    .getAttribute("content");
+  const csrfHeader = document
+    .querySelector('meta[name="_csrf_header"]')
+    .getAttribute("content");
 
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: "dayGridMonth",
     selectable: true,
     select: handleSelect,
     locale: "de",
-    allDay: true,
     firstDay: 1,
     buttonText: {
       today: "Heute",
@@ -82,20 +85,20 @@ document.addEventListener("DOMContentLoaded", function () {
   function handleFormSubmit(event) {
     event.preventDefault();
     const startDate = form.startDate.value;
-	const endDate = form.endDate.value;
+    const endDate = form.endDate.value;
 
     if (new Date(startDate) > new Date(endDate)) {
       alert("Das Enddatum muss nach dem Startdatum sein.");
       return;
     }
 
-    if (startDate && endDate) {    
+    if (startDate && endDate) {
       const headers = {
-      "Content-Type": "application/json",
-    };
-    if (csrfHeader && csrfToken) {
-      headers[csrfHeader] = csrfToken;
-    }
+        "Content-Type": "application/json",
+      };
+      if (csrfHeader && csrfToken) {
+        headers[csrfHeader] = csrfToken;
+      }
       fetch("/kalender/urlaubstage/save", {
         method: "POST",
         headers: headers,
@@ -109,15 +112,17 @@ document.addEventListener("DOMContentLoaded", function () {
           return response.json();
         })
         .then((savedEvent) => {
-			const endDate = new Date(savedEvent.endDate);
-			endDate.setDate(endDate.getDate() + 1);
-			end = endDate.toISOString().slice(0, 10);
-			
+          const endDate = new Date(savedEvent.endDate);
+          endDate.setDate(endDate.getDate() + 1);
+          end = endDate.toISOString().slice(0, 10);
+
           calendar.addEvent({
             title: savedEvent.eventName,
             start: savedEvent.startDate,
             end,
           });
+
+          ladeTabelleNeu();
           dialog.close();
           form.reset();
         })
@@ -125,5 +130,16 @@ document.addEventListener("DOMContentLoaded", function () {
           alert("Fehler beim Speichern des Urlaubs: " + error.message);
         });
     }
+  }
+
+  function ladeTabelleNeu() {
+    fetch(`/kalender/urlaub-tabelle`)
+      .then((response) => response.text())
+      .then((html) => {
+        document.getElementById("urlaub-tabellen-container").innerHTML = html;
+      })
+      .catch((error) => {
+        console.error("Fehler beim Laden der Tabelle:", error);
+      });
   }
 });
