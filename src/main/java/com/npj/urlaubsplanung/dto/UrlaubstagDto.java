@@ -4,16 +4,26 @@ import java.time.LocalDate;
 
 public class UrlaubstagDto {
 
+	private Integer id;
 	private String eventName;
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private StatusDto status;
 
-	public UrlaubstagDto(String eventName, LocalDate startDate, LocalDate endDate, StatusDto status) {
+	public UrlaubstagDto(Integer id, String eventName, LocalDate startDate, LocalDate endDate, StatusDto status) {
+		this.id = id;
 		this.eventName = eventName;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getEventName() {

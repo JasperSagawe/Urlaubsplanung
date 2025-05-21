@@ -9,11 +9,9 @@ import com.npj.urlaubsplanung.model.Urlaubsantrag;
 import com.npj.urlaubsplanung.repository.MitarbeiterRepository;
 import com.npj.urlaubsplanung.repository.MitarbeiterdatenRepository;
 import com.npj.urlaubsplanung.repository.UrlaubsantragRepository;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +26,10 @@ public class UrlaubstagService {
 		this.mitarbeiterRepository = mitarbeiterRepository;
 		this.mitarbeiterdatenRepository = mitarbeiterdatenRepository;
 		this.urlaubsantragRepository = urlaubsantragRepository;
+	}
+
+	public void deleteUrlaubstagById(Integer id) {
+		urlaubsantragRepository.deleteById(id);
 	}
 
 	public List<UrlaubstagDto> getUrlaubstage() {
@@ -53,7 +55,8 @@ public class UrlaubstagService {
 			}
 			Mitarbeiter mitarbeiter = antrag.getMitarbeiter();
 			String mitarbeiterName = "Urlaub - " + mitarbeiter.getVorname() + " " + mitarbeiter.getNachname();
-			return new UrlaubstagDto(mitarbeiterName, antrag.getStartDatum(), antrag.getEndDatum(), statusText);
+			return new UrlaubstagDto(antrag.getId(), mitarbeiterName, antrag.getStartDatum(), antrag.getEndDatum(),
+					statusText);
 		}).toList();
 	}
 
@@ -93,7 +96,8 @@ public class UrlaubstagService {
 			default:
 				statusText = StatusDto.BEANTRAGT;
 			}
-			return new UrlaubstagDto("Urlaub", antrag.getStartDatum(), antrag.getEndDatum(), statusText);
+			return new UrlaubstagDto(antrag.getId(), "Urlaub", antrag.getStartDatum(), antrag.getEndDatum(),
+					statusText);
 		}).toList();
 
 		return new UrlaubsdatenDto(mitarbeiter.getVorname(), mitarbeiter.getNachname(),
