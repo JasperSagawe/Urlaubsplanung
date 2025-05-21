@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function handleFormSubmit(event) {
     event.preventDefault();
-    const title = form.eventName.value;
+    const title = 'Urlaub';
     const start = form.startDate.value;
 	const endDate = new Date(form.endDate.value);
 	endDate.setDate(endDate.getDate() + 1);
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    if (title && start) {
+    if (start && end) {
       calendar.addEvent({ title, start, end });
     }
 
