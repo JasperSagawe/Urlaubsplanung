@@ -9,8 +9,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: "dayGridMonth",
-    dateClick: handleDateClick,
+    selectable: true,
+    select: handleSelect,
     locale: "de",
+    allDay: true,
     firstDay: 1,
     buttonText: {
       today: "Heute",
@@ -26,10 +28,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
   calendar.render();
 
-  function handleDateClick(info) {
+  function handleSelect(event) {
     dialog.showModal();
-    form.startDate.value = info.dateStr;
-    form.endDate.value = info.dateStr;
+    form.startDate.value = event.startStr;
+    if (event.endStr) {
+      const endDate = new Date(event.endStr);
+      endDate.setDate(endDate.getDate() - 1);
+      form.endDate.value = endDate.toISOString().slice(0, 10);
+    } else {
+      form.endDate.value = event.startStr;
+    }
     resetEndDateError();
   }
 
@@ -38,10 +46,13 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((data) => {
         data.forEach((event) => {
+          const endDate = new Date(event.endDate);
+          endDate.setDate(endDate.getDate() + 1);
+          end = endDate.toISOString().slice(0, 10);
           calendar.addEvent({
             title: event.eventName,
             start: event.startDate,
-            end: event.endDate,
+            end,
           });
         });
       })
@@ -70,7 +81,9 @@ document.addEventListener("DOMContentLoaded", function () {
     event.preventDefault();
     const title = form.eventName.value;
     const start = form.startDate.value;
-    const end = form.endDate.value;
+	const endDate = new Date(form.endDate.value);
+	endDate.setDate(endDate.getDate() + 1);
+	end = endDate.toISOString().slice(0, 10);
 
     if (new Date(start) > new Date(end)) {
       alert("Das Enddatum muss nach dem Startdatum sein.");

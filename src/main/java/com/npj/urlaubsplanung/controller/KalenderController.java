@@ -8,6 +8,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.npj.urlaubsplanung.security.LoginDetails;
@@ -36,5 +38,11 @@ class KalenderController {
 	@GetMapping("/urlaubstage")
 	public Iterable<UrlaubstagDto> getUrlaubstage() {
 		return urlaubstagService.getUrlaubstage();
+	}
+
+	@PostMapping("/urlaubstage/delete/{id}")
+	public String deleteUrlaubstag(@PathVariable Integer id) {
+		urlaubstagService.deleteUrlaubstagById(id);
+		return "redirect:/kalender";
 	}
 }

@@ -55,6 +55,7 @@
               <th>Startdatum</th>
               <th>Enddatum</th>
               <th>Status</th>
+              <th>Löschen</th>
             </tr>
           </thead>
           <tbody>
@@ -67,6 +68,32 @@
                 th:text="${#temporals.format(urlaubstag.endDate, 'dd.MM.yyyy')}"
               ></td>
               <td th:text="${urlaubstag.status.getDisplayName()}"></td>
+              <td>
+                <form
+                  th:action="@{/kalender/urlaubstage/delete/{id}(id=${urlaubstag.id})}"
+                  method="post"
+                  style="margin: 0"
+                  onsubmit="return handleDeleteClick(this, event);"
+                >
+                  <button type="submit">Löschen</button>
+                </form>
+                <script>
+                  function handleDeleteClick(form, event) {
+                    const button = form.querySelector('button[type="submit"]');
+                    if (button.dataset.confirmed === "true") {
+                      return true;
+                    }
+                    event.preventDefault();
+                    button.textContent = "Bestätigen!";
+                    button.dataset.confirmed = "true";
+                    setTimeout(() => {
+                      button.textContent = "Löschen";
+                      button.dataset.confirmed = "";
+                    }, 3000);
+                    return false;
+                  }
+                </script>
+              </td>
             </tr>
           </tbody>
         </table>
