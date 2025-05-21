@@ -60,6 +60,24 @@ public class UrlaubstagService {
 		}).toList();
 	}
 
+	public UrlaubstagDto saveUrlaubsantrag(String email, UrlaubstagDto urlaubstagDto) {
+		Optional<Mitarbeiter> mitarbeiterOpt = this.mitarbeiterRepository.findByEmail(email);
+
+		if (mitarbeiterOpt.isPresent()) {
+			Mitarbeiter mitarbeiter = mitarbeiterOpt.get();
+			Urlaubsantrag urlaubsantrag = new Urlaubsantrag(mitarbeiter, urlaubstagDto.getStartDate(),
+					urlaubstagDto.getEndDate(), 0, null, null);
+			this.urlaubsantragRepository.save(urlaubsantrag);
+
+			String mitarbeiterName = "Urlaub - " + mitarbeiter.getVorname() + " " + mitarbeiter.getNachname();
+
+			return new UrlaubstagDto(urlaubstagDto.getId(), mitarbeiterName, urlaubstagDto.getStartDate(),
+					urlaubstagDto.getEndDate(), null);
+		}
+
+		return null;
+	}
+
 	public UrlaubsdatenDto getUrlaubsdaten(String email) {
 		Optional<Mitarbeiter> mitarbeiterOpt = this.mitarbeiterRepository.findByEmail(email);
 

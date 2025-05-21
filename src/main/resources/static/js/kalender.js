@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const startDateInput = form.startDate;
   const endDateError = document.getElementById("endDateError");
   const cancelBtn = document.getElementById("cancel");
+  const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: "dayGridMonth",
@@ -79,22 +81,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function handleFormSubmit(event) {
     event.preventDefault();
-    const title = 'Urlaub';
-    const start = form.startDate.value;
-	const endDate = new Date(form.endDate.value);
-	endDate.setDate(endDate.getDate() + 1);
-	end = endDate.toISOString().slice(0, 10);
+    const startDate = form.startDate.value;
+	const endDate = form.endDate.value;
 
-    if (new Date(start) > new Date(end)) {
+    if (new Date(startDate) > new Date(endDate)) {
       alert("Das Enddatum muss nach dem Startdatum sein.");
       return;
     }
 
-    if (start && end) {
-      calendar.addEvent({ title, start, end });
+    if (startDate && endDate) {    
+      const headers = {
+      "Content-Type": "application/json",
+    };
+    if (csrfHeader && csrfToken) {
+      headers[csrfHeader] = csrfToken;
     }
-
-    dialog.close();
-    form.reset();
+      fetch("/kalender/urlaubstage/save", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({
+          startDate,
+          endDate,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("Fehler beim Speichern");
+          return response.json();
+        })
+        .then((savedEvent) => {
+			const endDate = new Date(savedEvent.endDate);
+			endDate.setDate(endDate.getDate() + 1);
+			end = endDate.toISOString().slice(0, 10);
+			
+          calendar.addEvent({
+            title: savedEvent.eventName,
+            start: savedEvent.startDate,
+            end,
+          });
+          dialog.close();
+          form.reset();
+        })
+        .catch((error) => {
+          alert("Fehler beim Speichern des Urlaubs: " + error.message);
+        });
+    }
   }
 });
