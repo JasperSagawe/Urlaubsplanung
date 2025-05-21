@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.npj.urlaubsplanung.security.LoginDetails;
 
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/kalender")
@@ -45,4 +46,12 @@ class KalenderController {
 		urlaubstagService.deleteUrlaubstagById(id);
 		return "redirect:/kalender";
 	}
+
+	@ResponseBody
+	@PostMapping("/urlaubstage/save")
+	public UrlaubstagDto saveUrlaubsantrag(@RequestBody UrlaubstagDto urlaubstagDto,
+			@AuthenticationPrincipal LoginDetails userDetails) {
+		return urlaubstagService.saveUrlaubsantrag(userDetails.getUsername(), urlaubstagDto);
+	}
+
 }
