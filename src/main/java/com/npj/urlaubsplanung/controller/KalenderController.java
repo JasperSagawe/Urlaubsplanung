@@ -35,6 +35,14 @@ class KalenderController {
 		return "kalender";
 	}
 
+	@GetMapping("/urlaub-tabelle")
+	public String urlaubTabelleFragment(@AuthenticationPrincipal LoginDetails userDetails, Model model) {
+		UrlaubsdatenDto urlaubstage = urlaubstagService.getUrlaubsdaten(userDetails.getUsername());
+		model.addAttribute("user", urlaubstage);
+		model.addAttribute("urlaubstage", urlaubstage.getUrlaubstage());
+    	return "common/urlaubstabelle :: urlaubstabelle";
+}
+
 	@ResponseBody
 	@GetMapping("/urlaubstage")
 	public Iterable<UrlaubstagDto> getUrlaubstage() {
