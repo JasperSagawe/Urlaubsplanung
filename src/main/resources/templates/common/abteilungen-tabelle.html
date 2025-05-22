@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymleaf.org">
+  <body>
+    <div th:fragment="abteilungenTabelle">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Anzahl der Mitarbeiter</th>
+            <th>Abteilungsleiter</th>
+            <th>Urlaubslimit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="a : ${abteilungen}">
+            <td th:text="${a.id}"></td>
+            <td th:text="${a.name}"></td>
+            <td th:text="${a.mitarbeiterAnzahl}"></td>
+            <td th:text="${a.abteilungsleiter}"></td>
+            <td th:text="${a.maxUrlaubProzent}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

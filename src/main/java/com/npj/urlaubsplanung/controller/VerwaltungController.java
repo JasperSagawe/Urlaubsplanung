@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.npj.urlaubsplanung.dto.AbteilungDto;
 import com.npj.urlaubsplanung.dto.MitarbeiterDto;
 import com.npj.urlaubsplanung.service.VerwaltungService;
 
@@ -44,5 +45,19 @@ class VerwaltungController {
 	public ResponseEntity<Void> deleteMitarbeiter(@PathVariable int id) {
 		verwaltungService.deleteMitarbeiterById(id);
 		return ResponseEntity.ok().build();
+	}
+
+	@GetMapping("/abteilungen")
+	public String abteilungen(Model model) {		
+		Iterable<AbteilungDto> abteilungen = verwaltungService.getAbteilungen();
+		model.addAttribute("abteilungen", abteilungen);
+		return "abteilungen";
+	}
+
+	@GetMapping("/abteilungen-tabelle")
+	public String abteilungenTabelleFragment(Model model) {
+		Iterable<AbteilungDto> abteilungen = verwaltungService.getAbteilungen();
+		model.addAttribute("abteilungen", abteilungen);
+		return "common/abteilungen-tabelle :: abteilungenTabelle";
 	}
 }

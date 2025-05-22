@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymleaf.org">
+  <head>
+    <meta charset="ISO-8859-1" />
+    <title>Abteilungen</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css" />
+  </head>
+  <body>
+    <div th:replace="~{common/header :: header('Abteilungen')}"></div>
+
+    <button id="abteilung-anlegen-btn" class="btn btn-primary" type="button">
+      Abteilung anlegen
+    </button>
+
+    <div id="abteilungen-tabelle-container">
+      <div
+        th:replace="~{common/abteilungen-tabelle :: abteilungenTabelle}"
+      ></div>
+    </div>
+
+    <dialog id="abteilungen-anlegen-dialog">
+      <form method="dialog" id="abteilungen-anlegen-form">
+        <label>Name: <input type="text" name="name" required /></label><br />
+        <label>Urlaubslimit: <input type="text" name="limit" required /></label
+        ><br />
+        <button type="submit">Speichern</button>
+        <button type="button" id="anlegen-abbrechen-btn">Abbrechen</button>
+      </form>
+    </dialog>
+  </body>
+</html>
