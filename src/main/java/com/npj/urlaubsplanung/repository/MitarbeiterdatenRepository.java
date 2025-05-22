@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MitarbeiterdatenRepository extends JpaRepository<Mitarbeiterdaten, Integer> {
 	Mitarbeiterdaten findByMitarbeiter(Mitarbeiter mitarbeiter);
+	
+	void deleteByMitarbeiter(Mitarbeiter mitarbeiter);
 }
