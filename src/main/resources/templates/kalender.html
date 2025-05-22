@@ -71,25 +71,28 @@
       </div>
     </div>
 
-    <dialog id="eventDialog">
+    <dialog class="kalenderForm" id="eventDialog">
+      <h2>Urlaub beantragen</h2>
       <form id="eventForm" method="dialog">
         <label for="eventName">Bezeichnung:</label>
         <input type="text" id="eventName" name="eventName" required />
 
-        <label for="startDate">Startdatum:</label>
-        <input type="date" id="startDate" name="startDate" required />
-
-        <label for="endDate">Enddatum:</label>
-        <input type="date" id="endDate" name="endDate" required />
-        <span
-          id="endDateError"
-          style="color: red; font-size: 0.9em; display: none"
-          >Das Enddatum muss nach dem Startdatum sein.</span
-        >
-
         <div>
-          <button type="submit">Einreichen</button>
-          <button type="button" id="cancel">Abbrechen</button>
+          <label for="startDate">Startdatum:</label>
+          <input type="date" id="startDate" name="startDate" required />
+
+          <label for="endDate">Enddatum:</label>
+          <input type="date" id="endDate" name="endDate" required />
+          <span
+            id="endDateError"
+            style="color: red; font-size: 0.9em; display: none"
+            >Das Enddatum muss nach dem Startdatum sein.</span
+          >
+        </div>
+
+        <div class="dialogButtons">
+          <button class="button" type="submit">Einreichen</button>
+          <button class="button" type="button" id="cancel">Abbrechen</button>
         </div>
       </form>
     </dialog>
