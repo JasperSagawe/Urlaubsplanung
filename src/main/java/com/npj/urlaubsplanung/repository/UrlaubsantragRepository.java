@@ -11,4 +11,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UrlaubsantragRepository extends JpaRepository<Urlaubsantrag, Integer> {
     List<Urlaubsantrag> findByMitarbeiter(Mitarbeiter mitarbeiter);
+    
+    void deleteAllByMitarbeiter(Mitarbeiter mitarbeiter);
+    
+    void deleteAllByGenehmigtVon(Mitarbeiter mitarbeiter);
+    
+    
 }
