@@ -22,9 +22,14 @@ document.addEventListener("DOMContentLoaded", function () {
     buttonText: {
       today: "Heute",
     },
+    events: {
+      url: "/kalender/urlaubstage",
+      method: "GET",
+      failure: function () {
+        alert("Fehler beim Laden der Ereignisse!");
+      },
+    },
   });
-
-  loadEvents();
 
   endDateInput.addEventListener("input", validateDateInputs);
   startDateInput.addEventListener("input", validateDateInputs);
@@ -32,6 +37,43 @@ document.addEventListener("DOMContentLoaded", function () {
   cancelBtn.addEventListener("click", () => dialog.close());
 
   calendar.render();
+
+  document.body.addEventListener("click", function (e) {
+    if (e.target.classList.contains("delete-urlaub-btn")) {
+      if (e.target.dataset.confirming === "true") {
+        const urlaubId = e.target.getAttribute("data-id");
+        const headers = {
+          "Content-Type": "application/json",
+        };
+        if (csrfHeader && csrfToken) {
+          headers[csrfHeader] = csrfToken;
+        }
+
+        fetch("/kalender/urlaubstage/delete/" + urlaubId, {
+          method: "DELETE",
+          headers: headers,
+        }).then((response) => {
+          if (response.ok) {
+            ladeTabelleNeu();
+            calendar.refetchEvents();
+          } else {
+            alert("Fehler beim Löschen.");
+          }
+        });
+        e.target.textContent = "Löschen";
+        e.target.removeAttribute("data-confirming");
+      } else {
+        e.target.textContent = "Bestätigen";
+        e.target.dataset.confirming = "true";
+        setTimeout(() => {
+          if (e.target.dataset.confirming === "true") {
+            e.target.textContent = "Löschen";
+            e.target.removeAttribute("data-confirming");
+          }
+        }, 3000);
+      }
+    }
+  });
 
   function handleSelect(event) {
     dialog.showModal();
@@ -44,26 +86,6 @@ document.addEventListener("DOMContentLoaded", function () {
       form.endDate.value = event.startStr;
     }
     resetEndDateError();
-  }
-
-  function loadEvents() {
-    fetch("/kalender/urlaubstage")
-      .then((response) => response.json())
-      .then((data) => {
-        data.forEach((event) => {
-          const endDate = new Date(event.endDate);
-          endDate.setDate(endDate.getDate() + 1);
-          end = endDate.toISOString().slice(0, 10);
-          calendar.addEvent({
-            title: event.eventName,
-            start: event.startDate,
-            end,
-          });
-        });
-      })
-      .catch((error) => {
-        console.error("Fehler beim Laden der Urlaubstage:", error);
-      });
   }
 
   function validateDateInputs() {
@@ -112,17 +134,8 @@ document.addEventListener("DOMContentLoaded", function () {
           return response.json();
         })
         .then((savedEvent) => {
-          const endDate = new Date(savedEvent.endDate);
-          endDate.setDate(endDate.getDate() + 1);
-          end = endDate.toISOString().slice(0, 10);
-
-          calendar.addEvent({
-            title: savedEvent.eventName,
-            start: savedEvent.startDate,
-            end,
-          });
-
           ladeTabelleNeu();
+          calendar.refetchEvents();
           dialog.close();
           form.reset();
         })
