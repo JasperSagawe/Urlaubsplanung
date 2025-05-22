@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymleaf.org">
   <body>
-    <div th:fragment="kalender-tabellen">
+    <div th:fragment="kalenderTabellen">
       <table>
         <thead>
           <tr>
@@ -42,30 +42,11 @@
             ></td>
             <td th:text="${urlaubstag.status.getDisplayName()}"></td>
             <td>
-              <form
-                th:action="@{/kalender/urlaubstage/delete/{id}(id=${urlaubstag.id})}"
-                method="post"
-                style="margin: 0"
-                onsubmit="return handleDeleteClick(this, event);"
-              >
-                <button type="submit">Löschen</button>
-              </form>
-              <script>
-                function handleDeleteClick(form, event) {
-                  const button = form.querySelector('button[type="submit"]');
-                  if (button.dataset.confirmed === "true") {
-                    return true;
-                  }
-                  event.preventDefault();
-                  button.textContent = "Bestätigen!";
-                  button.dataset.confirmed = "true";
-                  setTimeout(() => {
-                    button.textContent = "Löschen";
-                    button.dataset.confirmed = "";
-                  }, 3000);
-                  return false;
-                }
-              </script>
+				<button 
+				    class="btn btn-danger delete-urlaub-btn"
+				    th:data-id="${urlaubstag.id}">
+				    Löschen
+				</button>
             </td>
           </tr>
         </tbody>
