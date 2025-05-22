@@ -118,8 +118,7 @@ public class UrlaubstagService {
 					statusText);
 		}).toList();
 
-		return new UrlaubsdatenDto(mitarbeiter.getVorname(), mitarbeiter.getNachname(),
-				mitarbeiterdaten.getResturlaubVorjahr(), mitarbeiterdaten.getVerfuegbareUrlaubstage(), beantragt.get(),
+		return new UrlaubsdatenDto(mitarbeiterdaten.getResturlaubVorjahr(), mitarbeiterdaten.getVerfuegbareUrlaubstage(), beantragt.get(),
 				genommen.get(), urlaubstage);
 	}
 }
