@@ -6,6 +6,48 @@ const csrfHeader = document
   .querySelector('meta[name="_csrf_header"]')
   .getAttribute("content");
   
+  const anlegenBtn = document.getElementById("mitarbeiter-anlegen-btn");
+  const dialog = document.getElementById("mitarbeiter-anlegen-dialog");
+  const abbrechenBtn = document.getElementById("anlegen-abbrechen-btn");
+  const form = document.getElementById("mitarbeiter-anlegen-form");
+
+  if (anlegenBtn && dialog && abbrechenBtn && form) {
+    anlegenBtn.addEventListener("click", () => dialog.showModal());
+    abbrechenBtn.addEventListener("click", () => dialog.close());
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const data = {
+        vorname: form.vorname.value,
+        nachname: form.nachname.value,
+        team: form.team.value,
+        aktiv: form.aktiv.checked,
+        passwortZuruecksetzen: form.passwortZuruecksetzen.checked,
+      };
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      if (csrfHeader && csrfToken) {
+        headers[csrfHeader] = csrfToken;
+      }
+      fetch("/verwaltung/mitarbeiter/anlegen", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(data),
+      })
+        .then((response) => {
+          if (response.ok) {
+            ladeTabelleNeu();
+            dialog.close();
+            form.reset();
+          } else {
+            alert("Fehler beim Anlegen.");
+          }
+        })
+        .catch(() => alert("Fehler beim Anlegen."));
+    });
+  }
+  
   document.body.addEventListener("click", function (e) {
     if (e.target.classList.contains("delete-mitarbeiter-btn")) {
       if (e.target.dataset.confirming === "true") {
