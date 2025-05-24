@@ -17,9 +17,6 @@ public class Urlaubsantrag {
 	private LocalDate endDatum;
 	private Integer status;
 
-	@ManyToOne
-	@JoinColumn(name = "genehmigtVon_id")
-	private Mitarbeiter genehmigtVon;
 	private LocalDateTime antragsdatum;
 
 	public Urlaubsantrag() {
@@ -31,7 +28,6 @@ public class Urlaubsantrag {
 		this.startDatum = startDatum;
 		this.endDatum = endDatum;
 		this.status = status;
-		this.genehmigtVon = genehmigtVon;
 		this.antragsdatum = antragsdatum;
 	}
 
@@ -73,14 +69,6 @@ public class Urlaubsantrag {
 
 	public void setStatus(Integer status) {
 		this.status = status;
-	}
-
-	public Mitarbeiter getGenehmigtVon() {
-		return genehmigtVon;
-	}
-
-	public void setGenehmigtVon(Mitarbeiter genehmigtVon) {
-		this.genehmigtVon = genehmigtVon;
 	}
 
 	public LocalDateTime getAntragsdatum() {

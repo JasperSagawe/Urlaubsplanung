@@ -6,6 +6,9 @@ import java.sql.Timestamp;
 
 @Entity
 public class Mitarbeiter {
+	
+	@OneToOne(mappedBy = "mitarbeiter", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private Mitarbeiterdaten mitarbeiterdaten;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,21 +21,21 @@ public class Mitarbeiter {
 
 	@ManyToOne
 	@JoinColumn(name = "admin_role_id")
-	private AdminRole adminRole;
+	private UserRole userRole;
 
 	private Boolean aktiv = true;
 	private Integer loginVersuche = 0;
 	private Boolean firstLogin = true;
 	private Timestamp lastLogin;
-
+	
 	public Mitarbeiter() {
 	}
 
-	public Mitarbeiter(String vorname, String nachname, String email, AdminRole adminRole) {
+	public Mitarbeiter(String vorname, String nachname, String email, UserRole userRole) {
 		this.vorname = vorname;
 		this.nachname = nachname;
 		this.email = email;
-		this.adminRole = adminRole;
+		this.userRole = userRole;
 	}
 
 	public Integer getId() {
@@ -75,12 +78,12 @@ public class Mitarbeiter {
 		this.passwortHash = passwortHash;
 	}
 
-	public AdminRole getAdminRole() {
-		return adminRole;
+	public UserRole getUserRole() {
+		return userRole;
 	}
 
-	public void setAdminRole(AdminRole adminRole) {
-		this.adminRole = adminRole;
+	public void setAdminRole(UserRole userRole) {
+		this.userRole = userRole;
 	}
 
 	public Boolean getAktiv() {
@@ -114,4 +117,5 @@ public class Mitarbeiter {
 	public void setLastLogin(Timestamp lastLogin) {
 		this.lastLogin = lastLogin;
 	}
+	
 }

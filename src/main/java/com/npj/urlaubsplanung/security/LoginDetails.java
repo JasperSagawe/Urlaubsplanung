@@ -19,8 +19,8 @@ public class LoginDetails implements UserDetails {
 
 @Override
 public Collection<? extends GrantedAuthority> getAuthorities() {
-    String rolle = mitarbeiter.getAdminRole() != null
-        ? mitarbeiter.getAdminRole().getRolleName().toUpperCase().replace("-", "_").replace(" ", "_")
+    String rolle = mitarbeiter.getUserRole() != null
+        ? mitarbeiter.getUserRole().getRolleName().toUpperCase().replace("-", "_").replace(" ", "_")
         : "KEIN_ADMIN";
 
     return List.of(new SimpleGrantedAuthority("ROLE_" + rolle));

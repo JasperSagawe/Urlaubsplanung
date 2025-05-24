@@ -1,46 +1,72 @@
 package com.npj.urlaubsplanung.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Team {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	private String name;
-	private Integer maxUrlaubProzent;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-	public Team() {
-	}
+    private String name;
 
-	public Team(String name, Integer maxUrlaubProzent) {
-		this.name = name;
-		this.maxUrlaubProzent = maxUrlaubProzent;
-	}
+    private Integer maxUrlaubProzent;
 
-	public Integer getId() {
-		return id;
-	}
+    @OneToMany(mappedBy = "team", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Mitarbeiterdaten> mitarbeiterDatenListe = new ArrayList<>();
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    @OneToOne
+    @JoinColumn(name = "teamleiter_id")
+    private Mitarbeiter teamleiter;
 
-	public String getName() {
-		return name;
-	}
+    public Team() {
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public Team(String name, Integer maxUrlaubProzent) {
+        this.name = name;
+        this.maxUrlaubProzent = maxUrlaubProzent;
+    }
 
-	public Integer getMaxUrlaubProzent() {
-		return maxUrlaubProzent;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setMaxUrlaubProzent(Integer maxUrlaubProzent) {
-		this.maxUrlaubProzent = maxUrlaubProzent;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getMaxUrlaubProzent() {
+        return maxUrlaubProzent;
+    }
+
+    public void setMaxUrlaubProzent(Integer maxUrlaubProzent) {
+        this.maxUrlaubProzent = maxUrlaubProzent;
+    }
+
+    public List<Mitarbeiterdaten> getMitarbeiterDatenListe() {
+        return mitarbeiterDatenListe;
+    }
+
+    public void setMitarbeiterListe(List<Mitarbeiterdaten> mitarbeiterDatenListe) {
+        this.mitarbeiterDatenListe = mitarbeiterDatenListe;
+    }
+
+    public Mitarbeiter getTeamleiter() {
+        return teamleiter;
+    }
+
+    public void setTeamleiter(Mitarbeiter teamleiter) {
+        this.teamleiter = teamleiter;
+    }
 }
