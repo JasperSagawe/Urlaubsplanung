@@ -16,14 +16,13 @@ public class Urlaubsantrag {
 	private LocalDate startDatum;
 	private LocalDate endDatum;
 	private Integer status;
-
 	private LocalDateTime antragsdatum;
 
 	public Urlaubsantrag() {
 	}
 
 	public Urlaubsantrag(Mitarbeiter mitarbeiter, LocalDate startDatum, LocalDate endDatum, Integer status,
-			Mitarbeiter genehmigtVon, LocalDateTime antragsdatum) {
+			LocalDateTime antragsdatum) {
 		this.mitarbeiter = mitarbeiter;
 		this.startDatum = startDatum;
 		this.endDatum = endDatum;
