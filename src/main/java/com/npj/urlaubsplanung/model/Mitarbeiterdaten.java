@@ -1,4 +1,3 @@
-
 package com.npj.urlaubsplanung.model;
 
 import jakarta.persistence.*;
@@ -18,6 +17,10 @@ public class Mitarbeiterdaten {
 	private Integer urlaubstageProJahr;
 	private Integer aktuellesJahr;
 	private Integer resturlaubVorjahr;
+
+	@ManyToOne
+	@JoinColumn(name = "team_id")
+	private Team team;
 
 	public Mitarbeiterdaten() {
 	}
@@ -78,4 +81,13 @@ public class Mitarbeiterdaten {
 	public void setResturlaubVorjahr(Integer resturlaubVorjahr) {
 		this.resturlaubVorjahr = resturlaubVorjahr;
 	}
+
+	public Team getTeam() {
+		return team;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
+	}
+
 }

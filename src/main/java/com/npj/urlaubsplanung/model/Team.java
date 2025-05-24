@@ -1,6 +1,8 @@
 package com.npj.urlaubsplanung.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Team {
@@ -8,8 +10,17 @@ public class Team {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+
 	private String name;
+
 	private Integer maxUrlaubProzent;
+
+	@OneToMany(mappedBy = "team")
+	private List<Mitarbeiterdaten> mitarbeiterDatenListe = new ArrayList<>();
+
+	@OneToOne
+	@JoinColumn(name = "teamleiter_id")
+	private Mitarbeiter teamleiter;
 
 	public Team() {
 	}
@@ -41,6 +52,22 @@ public class Team {
 
 	public void setMaxUrlaubProzent(Integer maxUrlaubProzent) {
 		this.maxUrlaubProzent = maxUrlaubProzent;
+	}
+
+	public List<Mitarbeiterdaten> getMitarbeiterDatenListe() {
+		return mitarbeiterDatenListe;
+	}
+
+	public void setMitarbeiterListe(List<Mitarbeiterdaten> mitarbeiterDatenListe) {
+		this.mitarbeiterDatenListe = mitarbeiterDatenListe;
+	}
+
+	public Mitarbeiter getTeamleiter() {
+		return teamleiter;
+	}
+
+	public void setTeamleiter(Mitarbeiter teamleiter) {
+		this.teamleiter = teamleiter;
 	}
 
 }

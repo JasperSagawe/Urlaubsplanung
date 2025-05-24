@@ -17,15 +17,15 @@ public class LoginDetails implements UserDetails {
 		this.mitarbeiter = mitarbeiter;
 	}
 
-@Override
-public Collection<? extends GrantedAuthority> getAuthorities() {
-    String rolle = mitarbeiter.getAdminRole() != null
-        ? mitarbeiter.getAdminRole().getRolleName().toUpperCase().replace("-", "_").replace(" ", "_")
-        : "KEIN_ADMIN";
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		String rolle = mitarbeiter.getUserRole() != null
+				? mitarbeiter.getUserRole().getRolleName().toUpperCase().replace("-", "_").replace(" ", "_")
+				: "KEIN_ADMIN";
 
-    return List.of(new SimpleGrantedAuthority("ROLE_" + rolle));
-}
-	
+		return List.of(new SimpleGrantedAuthority("ROLE_" + rolle));
+	}
+
 	public Mitarbeiter getMitarbeiter() {
 		return mitarbeiter;
 	}
