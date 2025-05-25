@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,8 @@ import de.focus_shift.jollyday.core.Holiday;
 
 import com.npj.urlaubsplanung.dto.UrlaubsdatenDto;
 import com.npj.urlaubsplanung.dto.UrlaubstagDto;
+import com.npj.urlaubsplanung.exception.MaximaleUrlaubstageUeberschrittenException;
+import com.npj.urlaubsplanung.exception.TeamUrlaubsgrenzeErreichtException;
 import com.npj.urlaubsplanung.service.UrlaubstagService;
 import com.npj.urlaubsplanung.security.LoginDetails;
 
@@ -53,8 +56,15 @@ class KalenderController {
 
 	@ResponseBody
 	@GetMapping("/urlaubstage")
-	public List<Map<String, Object>> getUrlaubstage() {
-		List<Map<String, Object>> events = urlaubstagService.getUrlaubstage().stream().map(u -> {
+	public List<Map<String, Object>> getUrlaubstage(@AuthenticationPrincipal LoginDetails userDetails) {
+		List<Map<String, Object>> events;
+		Integer teamId = userDetails.getMitarbeiter().getMitarbeiterdaten().getTeam().getId();
+
+		List<UrlaubstagDto> urlaubstage = (teamId != null)
+			? urlaubstagService.getUrlaubstageByTeam(teamId)
+			: urlaubstagService.getUrlaubstage();
+
+		events = urlaubstage.stream().map(u -> {
 			Map<String, Object> event = new HashMap<>();
 			event.put("title", u.getEventName());
 			event.put("start", u.getStartDate().toString());
@@ -83,9 +93,23 @@ class KalenderController {
 
 	@ResponseBody
 	@PostMapping("/urlaubstage/save")
-	public UrlaubstagDto saveUrlaubsantrag(@RequestBody UrlaubstagDto urlaubstagDto,
+	public ResponseEntity<?> saveUrlaubsantrag(@RequestBody UrlaubstagDto urlaubstagDto,
 			@AuthenticationPrincipal LoginDetails userDetails) {
-		return urlaubstagService.saveUrlaubsantrag(userDetails.getUsername(), urlaubstagDto);
+		try {
+			UrlaubstagDto gespeichert = urlaubstagService.saveUrlaubsantrag(userDetails.getUsername(), urlaubstagDto);
+			return ResponseEntity.ok(gespeichert);
+
+		} catch (MaximaleUrlaubstageUeberschrittenException ex) {
+			String message = "DU_KANNST_MAXIMAL_" + ex.getVerbleibendeTage() + "_BEANTRAGEN";
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+
+		} catch (TeamUrlaubsgrenzeErreichtException ex) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("ZU_VIELE_TEAMMITGLIEDER_IM_URLAUB");
+
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Unbekannter Fehler: " + ex.getMessage());
+		}
 	}
 
 }

@@ -9,4 +9,6 @@ import com.npj.urlaubsplanung.model.Mitarbeiterdaten;
 @Repository
 public interface MitarbeiterdatenRepository extends JpaRepository<Mitarbeiterdaten, Integer> {
 	Mitarbeiterdaten findByMitarbeiter(Mitarbeiter mitarbeiter);
+
+	int countByTeamId(Integer id);
 }

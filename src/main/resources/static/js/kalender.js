@@ -132,8 +132,25 @@ document.addEventListener("DOMContentLoaded", function () {
           endDate,
         }),
       })
-        .then((response) => {
-          if (!response.ok) throw new Error("Fehler beim Speichern");
+        .then(async (response) => {
+          if (!response.ok) {
+            const errorText = await response.text();
+            if (errorText.includes("ZU_VIELE_TEAMMITGLIEDER_IM_URLAUB")) {
+              throw new Error(
+                "In diesem Zeitraum nehmen zu viele Teammitglieder Urlaub."
+              );
+            } else if (errorText.includes("DU_KANNST_MAXIMAL_")) {
+              const matches = errorText.match(
+                /DU_KANNST_MAXIMAL_(\d+)_BEANTRAGEN/
+              );
+              const maxTage = matches ? matches[1] : "?";
+              throw new Error(
+                `Du kannst maximal ${maxTage} weitere Urlaubstage beantragen.`
+              );
+            } else {
+              throw new Error("Unbekannter Fehler beim Speichern.");
+            }
+          }
           return response.json();
         })
         .then((savedEvent) => {

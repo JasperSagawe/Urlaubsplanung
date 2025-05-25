@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import com.npj.urlaubsplanung.dto.StatusDto;
 import com.npj.urlaubsplanung.dto.UrlaubsdatenDto;
 import com.npj.urlaubsplanung.dto.UrlaubstagDto;
+import com.npj.urlaubsplanung.exception.MaximaleUrlaubstageUeberschrittenException;
+import com.npj.urlaubsplanung.exception.TeamUrlaubsgrenzeErreichtException;
 import com.npj.urlaubsplanung.model.Mitarbeiter;
 import com.npj.urlaubsplanung.model.Mitarbeiterdaten;
 import com.npj.urlaubsplanung.model.Team;
@@ -104,20 +106,56 @@ public class UrlaubstagService {
 			long tage = berechneTage(urlaubstagDto.getStartDate(), urlaubstagDto.getEndDate());
 
 			Mitarbeiterdaten mitarbeiterdaten = this.mitarbeiterdatenRepository.findByMitarbeiter(mitarbeiter);
-			if (mitarbeiterdaten != null) {
-				int verfuegbareUrlaubstage = mitarbeiterdaten.getVerfuegbareUrlaubstage();
-				mitarbeiterdaten.setVerfuegbareUrlaubstage(verfuegbareUrlaubstage - (int) tage);
-				this.mitarbeiterdatenRepository.save(mitarbeiterdaten);
+			if (mitarbeiterdaten == null) {
+				return null;
+			}
+
+			int verfuegbareUrlaubstage = mitarbeiterdaten.getVerfuegbareUrlaubstage();
+			if (tage > verfuegbareUrlaubstage) {
+				throw new MaximaleUrlaubstageUeberschrittenException(verfuegbareUrlaubstage);
 			}
 
 			Urlaubsantrag urlaubsantrag = new Urlaubsantrag(mitarbeiter, urlaubstagDto.getStartDate(),
 					urlaubstagDto.getEndDate(), 0, null);
+
+			Team team = mitarbeiter.getMitarbeiterdaten().getTeam();
+			int maxTeamUrlauber = team.getMaxUrlaubProzent();
+
+			List<LocalDate> urlaubstage = urlaubstagDto.getStartDate()
+					.datesUntil(urlaubstagDto.getEndDate().plusDays(1)).toList();
+
+			int teamMitglieder = mitarbeiterdatenRepository.countByTeamId(team.getId());
+			int maxUrlauber = (int) Math.ceil(teamMitglieder * (maxTeamUrlauber / 100.0));
+
+			for (LocalDate tag : urlaubstage) {
+				long bereitsImUrlaub = urlaubsantragRepository.findAll().stream().filter(a -> {
+					Mitarbeiter m = a.getMitarbeiter();
+					Team t = m.getMitarbeiterdaten().getTeam();
+					return t != null && t.getId() == team.getId() && !a.getStartDatum().isAfter(tag)
+							&& !a.getEndDatum().isBefore(tag) && (a.getStatus() == 0 || a.getStatus() == 1);
+				}).count();
+				if (bereitsImUrlaub >= maxUrlauber) {
+					throw new TeamUrlaubsgrenzeErreichtException();
+				}
+			}			
+			
+			int resturlaubVorjahr = mitarbeiterdaten.getResturlaubVorjahr();
+			if (resturlaubVorjahr > 0) {
+				if (resturlaubVorjahr >= (int) tage) {
+					mitarbeiterdaten.setResturlaubVorjahr(resturlaubVorjahr - (int) tage);
+				} else {
+					mitarbeiterdaten.setResturlaubVorjahr(0);
+				}
+			}
+
+			mitarbeiterdaten.setVerfuegbareUrlaubstage(verfuegbareUrlaubstage - (int) tage);
+			this.mitarbeiterdatenRepository.save(mitarbeiterdaten);
 			this.urlaubsantragRepository.save(urlaubsantrag);
 
 			String mitarbeiterName = "Urlaub - " + mitarbeiter.getVorname() + " " + mitarbeiter.getNachname();
 
 			return new UrlaubstagDto(urlaubstagDto.getId(), mitarbeiterName, urlaubstagDto.getStartDate(),
-					urlaubstagDto.getEndDate(), null);
+					urlaubstagDto.getEndDate(), StatusDto.BEANTRAGT);
 		}
 
 		return null;
