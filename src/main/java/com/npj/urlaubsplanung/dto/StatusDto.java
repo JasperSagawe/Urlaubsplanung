@@ -1,7 +1,7 @@
 package com.npj.urlaubsplanung.dto;
 
 public enum StatusDto {
-	BEANTRAGT("Beantragt"), GENEHMIGT("Genehmigt"), ABGELEHNT("Abgelehnt"), STORNIERT("Storniert");
+	BEANTRAGT("Beantragt"), GENEHMIGT("Genehmigt"), ABGELEHNT("Abgelehnt"), GENOMMEN("Genommen");
 
 	private final String displayName;
 
