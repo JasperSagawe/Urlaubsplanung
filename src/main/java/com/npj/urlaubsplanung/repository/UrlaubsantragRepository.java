@@ -10,6 +10,5 @@ import com.npj.urlaubsplanung.model.Urlaubsantrag;
 
 @Repository
 public interface UrlaubsantragRepository extends JpaRepository<Urlaubsantrag, Integer> {
-    List<Urlaubsantrag> findByMitarbeiter(Mitarbeiter mitarbeiter);
-
+    List<Urlaubsantrag> findByMitarbeiter(Mitarbeiter mitarbeiter);    
 }

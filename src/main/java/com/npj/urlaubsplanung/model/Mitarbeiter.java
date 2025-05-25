@@ -17,7 +17,7 @@ public class Mitarbeiter {
 	private String email;
 	private String passwortHash;
 
-	@OneToOne(mappedBy = "mitarbeiter", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToOne(mappedBy = "mitarbeiter", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Mitarbeiterdaten mitarbeiterdaten;
 
 	@OneToMany(mappedBy = "mitarbeiter", cascade = CascadeType.REMOVE, orphanRemoval = true)	
