@@ -9,15 +9,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: "dayGridMonth",
-    dateClick: handleDateClick,
+    selectable: true,
+    select: handleSelect,
     locale: "de",
     firstDay: 1,
     buttonText: {
       today: "Heute",
     },
+    events: {
+      url: "/kalender/urlaubstage",
+      method: "GET",
+      failure: function () {
+        alert("Fehler beim Laden der Urlaubstage!");
+      },
+    },
   });
-
-  loadEvents();
 
   endDateInput.addEventListener("input", validateDateInputs);
   startDateInput.addEventListener("input", validateDateInputs);
@@ -26,28 +32,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   calendar.render();
 
-  function handleDateClick(info) {
+  function handleSelect(event) {
     dialog.showModal();
-    form.startDate.value = info.dateStr;
-    form.endDate.value = info.dateStr;
+    form.startDate.value = event.startStr;
+    if (event.endStr) {
+      const endDate = new Date(event.endStr);
+      endDate.setDate(endDate.getDate() - 1);
+      form.endDate.value = endDate.toISOString().slice(0, 10);
+    } else {
+      form.endDate.value = event.startStr;
+    }
     resetEndDateError();
-  }
-
-  function loadEvents() {
-    fetch("/kalender/urlaubstage")
-      .then((response) => response.json())
-      .then((data) => {
-        data.forEach((event) => {
-          calendar.addEvent({
-            title: event.eventName,
-            start: event.startDate,
-            end: event.endDate,
-          });
-        });
-      })
-      .catch((error) => {
-        console.error("Fehler beim Laden der Urlaubstage:", error);
-      });
   }
 
   function validateDateInputs() {
@@ -68,19 +63,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function handleFormSubmit(event) {
     event.preventDefault();
-    const title = form.eventName.value;
-    const start = form.startDate.value;
-    const end = form.endDate.value;
+    const startDate = form.startDate.value;
+    const endDate = form.endDate.value;
 
-    if (new Date(start) > new Date(end)) {
+    if (new Date(startDate) > new Date(endDate)) {
       alert("Das Enddatum muss nach dem Startdatum sein.");
       return;
     }
 
-    if (title && start) {
-      calendar.addEvent({ title, start, end });
-    }
-
+    if (startDate && endDate) {
     dialog.close();
     form.reset();
   }

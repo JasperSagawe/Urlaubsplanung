@@ -34,7 +34,14 @@ class KalenderController {
 
 	@ResponseBody
 	@GetMapping("/urlaubstage")
-	public Iterable<UrlaubstagDto> getUrlaubstage() {
-		return urlaubstagService.getUrlaubstag();
+	public List<Map<String, Object>> getUrlaubstage() {
+		return urlaubstagService.getUrlaubstage().stream().map(u -> {
+			Map<String, Object> event = new HashMap<>();
+			event.put("title", u.getEventName());
+			event.put("start", u.getStartDate().toString());
+			event.put("end", u.getEndDate().plusDays(1).toString());
+			return event;
+		}).collect(Collectors.toList());
 	}
+
 }

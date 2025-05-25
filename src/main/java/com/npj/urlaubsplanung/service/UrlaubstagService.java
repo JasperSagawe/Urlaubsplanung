@@ -1,6 +1,10 @@
 package com.npj.urlaubsplanung.service;
 
+import com.npj.urlaubsplanung.model.Mitarbeiter;
+import com.npj.urlaubsplanung.model.Urlaubsantrag;
 import com.npj.urlaubsplanung.dto.UrlaubstagDto;
+import com.npj.urlaubsplanung.dto.StatusDto;
+import com.npj.urlaubsplanung.repository.UrlaubsantragRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,16 +13,37 @@ import org.springframework.stereotype.Service;
 @Service
 public class UrlaubstagService {
 
-	public UrlaubstagService() {
+	UrlaubsantragRepository urlaubsantragRepository;
+
+	public UrlaubstagService(UrlaubsantragRepository urlaubsantragRepository) {
+		this.urlaubsantragRepository = urlaubsantragRepository;
 	}
 
-	public Iterable<UrlaubstagDto> getUrlaubstag() {
-		LocalDate aliceDate = LocalDate.now();
-		LocalDate bobDate = LocalDate.now().plusDays(7);
-		LocalDate charlieDate = LocalDate.now().minusDays(4);
+	public List<UrlaubstagDto> getUrlaubstage() {
+		List<Urlaubsantrag> urlaubsantraege = this.urlaubsantragRepository.findAll();
 
-		return List.of(new UrlaubstagDto("Urlaub - Alice", aliceDate, aliceDate.plusDays(2)),
-				new UrlaubstagDto("Urlaub - Bob", bobDate, bobDate.plusDays(3)),
-				new UrlaubstagDto("Urlaub - Charlie", charlieDate, charlieDate));
+		return urlaubsantraege.stream().map(antrag -> {
+			StatusDto statusText;
+			switch (antrag.getStatus()) {
+			case 0:
+				statusText = StatusDto.BEANTRAGT;
+				break;
+			case 1:
+				statusText = StatusDto.GENEHMIGT;
+				break;
+			case 2:
+				statusText = StatusDto.ABGELEHNT;
+				break;
+			case 3:
+				statusText = StatusDto.STORNIERT;
+				break;
+			default:
+				statusText = StatusDto.BEANTRAGT;
+			}
+			Mitarbeiter mitarbeiter = antrag.getMitarbeiter();
+			String mitarbeiterName = "Urlaub - " + mitarbeiter.getVorname() + " " + mitarbeiter.getNachname();
+			return new UrlaubstagDto(antrag.getId(), mitarbeiterName, antrag.getStartDatum(), antrag.getEndDatum(),
+					statusText);
+		}).toList();
 	}
 }
