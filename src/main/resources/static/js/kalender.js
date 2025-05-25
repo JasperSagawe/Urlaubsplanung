@@ -29,7 +29,9 @@ document.addEventListener("DOMContentLoaded", function () {
       failure: function () {
         alert("Fehler beim Laden der Urlaubstage!");
       },
-    },
+    },	  eventDidMount: function(info) {
+	    info.el.setAttribute('title', info.event.title);
+	  }
   });
 
   endDateInput.addEventListener("input", validateDateInputs);

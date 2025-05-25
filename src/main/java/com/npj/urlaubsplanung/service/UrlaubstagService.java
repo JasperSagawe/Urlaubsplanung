@@ -1,10 +1,14 @@
 package com.npj.urlaubsplanung.service;
 
+import static de.focus_shift.jollyday.core.HolidayCalendar.GERMANY;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Year;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.stereotype.Service;
@@ -18,6 +22,10 @@ import com.npj.urlaubsplanung.model.Urlaubsantrag;
 import com.npj.urlaubsplanung.repository.MitarbeiterRepository;
 import com.npj.urlaubsplanung.repository.MitarbeiterdatenRepository;
 import com.npj.urlaubsplanung.repository.UrlaubsantragRepository;
+
+import de.focus_shift.jollyday.core.Holiday;
+import de.focus_shift.jollyday.core.HolidayManager;
+import de.focus_shift.jollyday.core.ManagerParameters;
 
 @Service
 public class UrlaubstagService {
@@ -155,13 +163,27 @@ public class UrlaubstagService {
 	}
 
 	public long berechneTage(LocalDate start, LocalDate end) {
+		Set<Holiday> feiertage = getFeiertage(start, end);
 		long tage = 0;
 		for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
-			DayOfWeek day = date.getDayOfWeek();
-			if (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY) {
+			LocalDate day = date;
+			DayOfWeek dayOfWeek = date.getDayOfWeek();
+			boolean isWeekend = (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY);
+			boolean isFeiertag = feiertage.stream().anyMatch(f -> f.getDate().equals(day));
+			if (!isWeekend && !isFeiertag) {
 				tage++;
 			}
 		}
 		return tage;
+	}
+
+	public Set<Holiday> getFeiertage(int year) {
+		HolidayManager manager = HolidayManager.getInstance(ManagerParameters.create(GERMANY));
+		return manager.getHolidays(Year.of(year));
+	}
+
+	public Set<Holiday> getFeiertage(LocalDate start, LocalDate end) {
+		HolidayManager manager = HolidayManager.getInstance(ManagerParameters.create(GERMANY));
+		return manager.getHolidays(start, end);
 	}
 }
