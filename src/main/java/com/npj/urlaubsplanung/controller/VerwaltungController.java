@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.npj.urlaubsplanung.dto.AbteilungDto;
 import com.npj.urlaubsplanung.dto.MitarbeiterDto;
 import com.npj.urlaubsplanung.dto.SelectDto;
 import com.npj.urlaubsplanung.service.VerwaltungService;
@@ -28,9 +29,9 @@ class VerwaltungController {
 	String verwaltung() {
 		return "verwaltung";
 	}
-		
+
 	@GetMapping("/mitarbeiter")
-	public String mitarbeiter(Model model) {		
+	public String mitarbeiter(Model model) {
 		Iterable<MitarbeiterDto> mitarbeiter = verwaltungService.getMitarbeiter();
 		model.addAttribute("mitarbeiter", mitarbeiter);
 		return "mitarbeiter";
@@ -42,11 +43,12 @@ class VerwaltungController {
 		model.addAttribute("mitarbeiter", mitarbeiter);
 		return "common/mitarbeiter-tabelle :: mitarbeiterTabelle";
 	}
-	
+
 	@ResponseBody
 	@PostMapping("/mitarbeiter/save")
 	public ResponseEntity<Void> saveMitarbeiter(@RequestBody MitarbeiterDto mitarbeiterDto) {
-		System.out.println("MitarbeiterDto empfangen: " + mitarbeiterDto.getTeam().getName() + mitarbeiterDto.getTeam().getId());
+		System.out.println(
+				"MitarbeiterDto empfangen: " + mitarbeiterDto.getTeam().getName() + mitarbeiterDto.getTeam().getId());
 		verwaltungService.saveMitarbeiter(mitarbeiterDto);
 		return ResponseEntity.ok().build();
 	}
@@ -57,20 +59,57 @@ class VerwaltungController {
 		return ResponseEntity.ok().build();
 	}
 
-	@GetMapping("/team-select")
+	@GetMapping("/abteilungen")
+	public String abteilungen(Model model) {
+		Iterable<AbteilungDto> abteilungen = verwaltungService.getAbteilungen();
+		model.addAttribute("abteilungen", abteilungen);
+		return "abteilungen";
+	}
+
+	@GetMapping("/abteilungen-tabelle")
+	public String abteilungenTabelleFragment(Model model) {
+		Iterable<AbteilungDto> abteilungen = verwaltungService.getAbteilungen();
+		model.addAttribute("abteilungen", abteilungen);
+		return "common/abteilungen-tabelle :: abteilungenTabelle";
+	}
+
 	@ResponseBody
+	@PostMapping("/abteilungen/save")
+	public ResponseEntity<Void> saveAbteilung(@RequestBody AbteilungDto abteilungDto) {
+		verwaltungService.saveAbteilung(abteilungDto);
+		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/abteilungen/remove/{id}")
+	public ResponseEntity<Void> removeAbteilungMitarbeiterById(@PathVariable int id) {
+		verwaltungService.removeAbteilungMitarbeiterById(id);
+		return ResponseEntity.ok().build();
+	}
+
+	@DeleteMapping("/abteilungen/delete/{id}")
+	public ResponseEntity<Void> deleteAbteilung(@PathVariable int id) {
+		verwaltungService.deleteAbteilungById(id);
+		return ResponseEntity.ok().build();
+	}
+
+	@ResponseBody
+	@GetMapping("/team-select")
 	public ResponseEntity<Iterable<SelectDto>> getTeamSelect() {
 		Iterable<SelectDto> teams = verwaltungService.getTeamSelect();
 		return ResponseEntity.ok(teams);
 	}
 
-	@GetMapping("/rolle-select")
 	@ResponseBody
+	@GetMapping("/rolle-select")
 	public ResponseEntity<Iterable<SelectDto>> getRolleSelect() {
 		Iterable<SelectDto> rollen = verwaltungService.getRolleSelect();
 		return ResponseEntity.ok(rollen);
 	}
 
-
-	
+	@ResponseBody
+	@GetMapping("/mitarbeiter-select")
+	public ResponseEntity<Iterable<SelectDto>> getMitarbeiterSelect() {
+		Iterable<SelectDto> mitarbeiter = verwaltungService.getMitarbeiterSelect();
+		return ResponseEntity.ok(mitarbeiter);
+	}
 }
