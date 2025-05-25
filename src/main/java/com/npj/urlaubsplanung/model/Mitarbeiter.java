@@ -1,9 +1,18 @@
 package com.npj.urlaubsplanung.model;
 
-import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Mitarbeiter {
@@ -20,7 +29,7 @@ public class Mitarbeiter {
 	@OneToOne(mappedBy = "mitarbeiter", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Mitarbeiterdaten mitarbeiterdaten;
 
-	@OneToMany(mappedBy = "mitarbeiter", cascade = CascadeType.REMOVE, orphanRemoval = true)	
+	@OneToMany(mappedBy = "mitarbeiter", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Urlaubsantrag> urlaubsantrag = new ArrayList<>();
 
 	@OneToOne(mappedBy = "teamleiter")

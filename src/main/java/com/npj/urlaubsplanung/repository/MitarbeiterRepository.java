@@ -1,9 +1,11 @@
 package com.npj.urlaubsplanung.repository;
 
-import com.npj.urlaubsplanung.model.Mitarbeiter;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.Optional;
+
+import com.npj.urlaubsplanung.model.Mitarbeiter;
 
 @Repository
 public interface MitarbeiterRepository extends JpaRepository<Mitarbeiter, Integer> {
