@@ -9,21 +9,19 @@ public class MitarbeiterDto {
 
 	// Nur zum Erstellen des Nutzers
 	private String passwort;
-	private TeamDto team;
-	private Boolean aktiv;
-	private Boolean passwortZuruecksetzen;
+	private SelectDto team;
+	private SelectDto rolle;
 	private int urlaubstageProJahr;
 	private int verfuegbareUrlaubstage;
 
-	public MitarbeiterDto(int id, String vorname, String nachname, String email, TeamDto team, Boolean aktiv,
-			Boolean passwortZuruecksetzen, int urlaubstageProJahr, int verfuegbareUrlaubstage) {
+	public MitarbeiterDto(int id, String vorname, String nachname, String email, SelectDto team, SelectDto rolle,
+			int urlaubstageProJahr, int verfuegbareUrlaubstage) {
 		this.id = id;
 		this.vorname = vorname;
 		this.nachname = nachname;
 		this.email = email;
 		this.team = team;
-		this.aktiv = aktiv;
-		this.passwortZuruecksetzen = passwortZuruecksetzen;
+		this.rolle = rolle;
 		this.urlaubstageProJahr = urlaubstageProJahr;
 		this.verfuegbareUrlaubstage = verfuegbareUrlaubstage;
 	}
@@ -68,28 +66,20 @@ public class MitarbeiterDto {
 		this.passwort = passwort;
 	}
 
-	public TeamDto getTeam() {
+	public SelectDto getTeam() {
 		return team;
 	}
 
-	public void setTeam(TeamDto team) {
+	public void setTeam(SelectDto team) {
 		this.team = team;
 	}
 
-	public Boolean getAktiv() {
-		return aktiv;
+	public SelectDto getRolle() {
+		return rolle;
 	}
 
-	public void setAktiv(Boolean aktiv) {
-		this.aktiv = aktiv;
-	}
-
-	public Boolean getPasswortZuruecksetzen() {
-		return passwortZuruecksetzen;
-	}
-
-	public void setPasswortZuruecksetzen(Boolean passwortZuruecksetzen) {
-		this.passwortZuruecksetzen = passwortZuruecksetzen;
+	public void setRolle(SelectDto rolle) {
+		this.rolle = rolle;
 	}
 
 	public int getUrlaubstageProJahr() {

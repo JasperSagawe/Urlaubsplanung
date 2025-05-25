@@ -1,11 +1,11 @@
 package com.npj.urlaubsplanung.dto;
 
-public class TeamDto {
+public class SelectDto {
 
 	private int id;
 	private String name;
 
-	public TeamDto(int id, String name) {
+	public SelectDto(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}

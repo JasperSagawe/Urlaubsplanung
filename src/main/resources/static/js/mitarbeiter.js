@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const abbrechenBtn = document.getElementById("anlegen-abbrechen-btn");
   const form = document.getElementById("mitarbeiter-anlegen-form");
   const teamSelect = document.getElementById("team-select");
+  const rolleSelect = document.getElementById("rolle-select");
 
   if (anlegenBtn && dialog && abbrechenBtn && form) {
     anlegenBtn.addEventListener("click", () => dialog.showModal());
@@ -28,8 +29,10 @@ document.addEventListener("DOMContentLoaded", function () {
           id: form.team.value,
           name: form.team.options[form.team.selectedIndex].text,
         },
-        aktiv: form.aktiv.checked,
-        passwortZuruecksetzen: form.passwortZuruecksetzen.checked,
+        rolle: {
+          id: form.rolle.value,
+          name: form.rolle.options[form.rolle.selectedIndex].text,
+        },
       };
       const headers = {
         "Content-Type": "application/json",
@@ -105,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (anlegenBtn && teamSelect) {
     anlegenBtn.addEventListener("click", function () {
-      fetch("/verwaltung/teams")
+      fetch("/verwaltung/team-select")
         .then((response) => response.json())
         .then((data) => {
           teamSelect.innerHTML = '<option value="">Bitte wählen...</option>';
@@ -114,6 +117,22 @@ document.addEventListener("DOMContentLoaded", function () {
             option.value = team.id;
             option.textContent = team.name;
             teamSelect.appendChild(option);
+          });
+        });
+    });
+  }
+
+  if (anlegenBtn && rolleSelect) {
+    anlegenBtn.addEventListener("click", function () {
+      fetch("/verwaltung/rolle-select")
+        .then((response) => response.json())
+        .then((data) => {
+          rolleSelect.innerHTML = '<option value="">Bitte wählen...</option>';
+          data.forEach((team) => {
+            const option = document.createElement("option");
+            option.value = team.id;
+            option.textContent = team.name;
+            rolleSelect.appendChild(option);
           });
         });
     });

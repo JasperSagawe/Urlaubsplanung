@@ -18,6 +18,7 @@ import com.npj.urlaubsplanung.dto.UrlaubsdatenDto;
 import com.npj.urlaubsplanung.dto.UrlaubstagDto;
 import com.npj.urlaubsplanung.model.Mitarbeiter;
 import com.npj.urlaubsplanung.model.Mitarbeiterdaten;
+import com.npj.urlaubsplanung.model.Team;
 import com.npj.urlaubsplanung.model.Urlaubsantrag;
 import com.npj.urlaubsplanung.repository.MitarbeiterRepository;
 import com.npj.urlaubsplanung.repository.MitarbeiterdatenRepository;
@@ -62,21 +63,36 @@ public class UrlaubstagService {
 	}
 
 	public List<UrlaubstagDto> getUrlaubstage() {
-		List<Urlaubsantrag> urlaubsantraege = this.urlaubsantragRepository.findAll();
+		return mapUrlaubsantraegeToDto(this.urlaubsantragRepository.findAll());
+	}
 
+	public List<UrlaubstagDto> getUrlaubstageByTeam(int id) {
+		return mapUrlaubsantraegeToDto(this.urlaubsantragRepository.findAll().stream().filter(antrag -> {
+			Mitarbeiter mitarbeiter = antrag.getMitarbeiter();
+			Team team = mitarbeiter.getMitarbeiterdaten().getTeam();
+			return team != null && team.getId() == id;
+		}).toList());
+	}
+
+	private List<UrlaubstagDto> mapUrlaubsantraegeToDto(List<Urlaubsantrag> urlaubsantraege) {
+		LocalDate heute = LocalDate.now();
 		return urlaubsantraege.stream().map(antrag -> {
 			StatusDto status;
-			status = switch (antrag.getStatus()) {
-			case 0 -> StatusDto.BEANTRAGT;
-			case 1 -> StatusDto.GENEHMIGT;
-			case 2 -> StatusDto.ABGELEHNT;
-			default -> StatusDto.BEANTRAGT;
-			};
-			Mitarbeiter mitarbeiter = antrag.getMitarbeiter();
-			String mitarbeiterName = "Urlaub - " + mitarbeiter.getVorname() + " " + mitarbeiter.getNachname();
+			if (antrag.getStatus() == 1 && antrag.getStartDatum().isBefore(heute)) {
+				status = StatusDto.GENOMMEN;
+			} else {
+				status = switch (antrag.getStatus()) {
+				case 0 -> StatusDto.BEANTRAGT;
+				case 1 -> StatusDto.GENEHMIGT;
+				case 2 -> StatusDto.ABGELEHNT;
+				default -> StatusDto.BEANTRAGT;
+				};
+			}
+			Mitarbeiter m = antrag.getMitarbeiter();
+			String mitarbeiterName = "Urlaub - " + m.getVorname() + " " + m.getNachname();
 			return new UrlaubstagDto(antrag.getId(), mitarbeiterName, antrag.getStartDatum(), antrag.getEndDatum(),
 					status);
-		}).toList();
+		}).sorted(Comparator.comparing(UrlaubstagDto::getStartDate)).toList();
 	}
 
 	public UrlaubstagDto saveUrlaubsantrag(String email, UrlaubstagDto urlaubstagDto) {
@@ -160,6 +176,32 @@ public class UrlaubstagService {
 		}
 
 		return daten;
+	}
+
+	public void genehmigeUrlaubstag(Long id) {
+		Optional<Urlaubsantrag> urlaubsantragOpt = urlaubsantragRepository.findById(id.intValue());
+		if (urlaubsantragOpt.isPresent()) {
+			Urlaubsantrag urlaubsantrag = urlaubsantragOpt.get();
+			urlaubsantrag.setStatus(1);
+			urlaubsantragRepository.save(urlaubsantrag);
+		}
+	}
+
+	public void lehneUrlaubstagAb(Long id) {
+		Optional<Urlaubsantrag> urlaubsantragOpt = urlaubsantragRepository.findById(id.intValue());
+		if (urlaubsantragOpt.isPresent()) {
+			Urlaubsantrag urlaubsantrag = urlaubsantragOpt.get();
+			urlaubsantrag.setStatus(2);
+			urlaubsantragRepository.save(urlaubsantrag);
+
+			Mitarbeiter mitarbeiter = urlaubsantrag.getMitarbeiter();
+			Mitarbeiterdaten mitarbeiterdaten = mitarbeiterdatenRepository.findByMitarbeiter(mitarbeiter);
+			if (mitarbeiterdaten != null) {
+				long tage = berechneTage(urlaubsantrag.getStartDatum(), urlaubsantrag.getEndDatum());
+				mitarbeiterdaten.setVerfuegbareUrlaubstage(mitarbeiterdaten.getVerfuegbareUrlaubstage() + (int) tage);
+				mitarbeiterdatenRepository.save(mitarbeiterdaten);
+			}
+		}
 	}
 
 	public long berechneTage(LocalDate start, LocalDate end) {

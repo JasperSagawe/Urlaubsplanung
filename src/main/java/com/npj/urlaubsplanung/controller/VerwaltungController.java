@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.npj.urlaubsplanung.dto.MitarbeiterDto;
-import com.npj.urlaubsplanung.dto.TeamDto;
+import com.npj.urlaubsplanung.dto.SelectDto;
 import com.npj.urlaubsplanung.service.VerwaltungService;
 
 @Controller
@@ -57,10 +57,20 @@ class VerwaltungController {
 		return ResponseEntity.ok().build();
 	}
 
-	@GetMapping("/teams")
+	@GetMapping("/team-select")
 	@ResponseBody
-	public ResponseEntity<Iterable<TeamDto>> getTeams() {
-		Iterable<TeamDto> teams = verwaltungService.getTeams();
+	public ResponseEntity<Iterable<SelectDto>> getTeamSelect() {
+		Iterable<SelectDto> teams = verwaltungService.getTeamSelect();
 		return ResponseEntity.ok(teams);
 	}
+
+	@GetMapping("/rolle-select")
+	@ResponseBody
+	public ResponseEntity<Iterable<SelectDto>> getRolleSelect() {
+		Iterable<SelectDto> rollen = verwaltungService.getRolleSelect();
+		return ResponseEntity.ok(rollen);
+	}
+
+
+	
 }

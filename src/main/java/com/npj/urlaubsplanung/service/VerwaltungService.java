@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.npj.urlaubsplanung.dto.MitarbeiterDto;
-import com.npj.urlaubsplanung.dto.TeamDto;
+import com.npj.urlaubsplanung.dto.SelectDto;
 import com.npj.urlaubsplanung.model.Mitarbeiter;
 import com.npj.urlaubsplanung.model.Mitarbeiterdaten;
 import com.npj.urlaubsplanung.model.Team;
@@ -37,23 +37,21 @@ public class VerwaltungService {
 
 		return mitarbeiterList.stream().map(m -> new MitarbeiterDto(m.getId(), m.getVorname(), m.getNachname(),
 				m.getEmail(),
-				m.getMitarbeiterdaten().getTeam() != null ? new TeamDto(m.getMitarbeiterdaten().getTeam().getId(),
+				m.getMitarbeiterdaten().getTeam() != null ? new SelectDto(m.getMitarbeiterdaten().getTeam().getId(),
 						m.getMitarbeiterdaten().getTeam().getName()) : null,
-				m.getAktiv(), m.getFirstLogin(), m.getMitarbeiterdaten().getUrlaubstageProJahr(),
+				m.getUserRole() != null ? new SelectDto(m.getUserRole().getId(),m.getUserRole().getRolleName()) : null, m.getMitarbeiterdaten().getUrlaubstageProJahr(),
 				m.getMitarbeiterdaten().getVerfuegbareUrlaubstage())).sorted(Comparator.comparing(MitarbeiterDto::getId)).toList();
 	}
 
 	public void saveMitarbeiter(MitarbeiterDto mitarbeiterDto) {
 
-		UserRole userRole = userRoleRepository.findById(1).orElse(null);
+		UserRole userRole = userRoleRepository.findById(mitarbeiterDto.getRolle().getId()).orElse(null);
 
 		Mitarbeiter mitarbeiter = new Mitarbeiter(mitarbeiterDto.getVorname(), mitarbeiterDto.getNachname(),
 				mitarbeiterDto.getEmail(), userRole);
 		mitarbeiter.setEmail(mitarbeiterDto.getVorname() + "@firma.de");
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		mitarbeiter.setPasswortHash(passwordEncoder.encode(mitarbeiterDto.getPasswort()));
-		mitarbeiter.setAktiv(mitarbeiterDto.getAktiv());
-		mitarbeiter.setFirstLogin(true);
 
 		Mitarbeiterdaten daten = new Mitarbeiterdaten(mitarbeiter, mitarbeiterDto.getUrlaubstageProJahr(),
 				mitarbeiterDto.getVerfuegbareUrlaubstage(), LocalDate.now().getYear(), 0);
@@ -79,8 +77,13 @@ public class VerwaltungService {
 		});
 	}
 
-	public Iterable<TeamDto> getTeams() {
-		List<Team> teamList = this.teamRepository.findAll();
-		return teamList.stream().map(t -> new TeamDto(t.getId(), t.getName())).sorted(Comparator.comparing(TeamDto::getId)).toList();
+	public Iterable<SelectDto> getTeamSelect() {
+		List<Team> teamSelect = this.teamRepository.findAll();
+		return teamSelect.stream().map(t -> new SelectDto(t.getId(), t.getName())).sorted(Comparator.comparing(SelectDto::getId)).toList();
+	}
+
+	public Iterable<SelectDto> getRolleSelect() {
+		List<UserRole> rolleSelect = this.userRoleRepository.findAll();
+		return rolleSelect.stream().map(u -> new SelectDto(u.getId(), u.getRolleName())).sorted(Comparator.comparing(SelectDto::getId)).toList();
 	}
 }
