@@ -11,16 +11,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class LoginDetailsService implements UserDetailsService {
 
-    private MitarbeiterRepository mitarbeiterRepository;
+	private final MitarbeiterRepository mitarbeiterRepository;
 
-    public LoginDetailsService(MitarbeiterRepository mitarbeiterRepository) {
-        this.mitarbeiterRepository = mitarbeiterRepository;
-    }
+	public LoginDetailsService(MitarbeiterRepository mitarbeiterRepository) {
+		this.mitarbeiterRepository = mitarbeiterRepository;
+	}
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return mitarbeiterRepository.findByEmail(email)
-                .map(LoginDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-    }
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		return mitarbeiterRepository.findByEmail(email).map(LoginDetails::new)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+	}
 }

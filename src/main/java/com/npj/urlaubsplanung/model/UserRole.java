@@ -6,17 +6,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class AdminRole {
+public class UserRole {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String rolleName;
 
-	public AdminRole() {
+	public UserRole() {
 	}
 
-	public AdminRole(String rolleName) {
+	public UserRole(String rolleName) {
 		this.rolleName = rolleName;
 	}
 

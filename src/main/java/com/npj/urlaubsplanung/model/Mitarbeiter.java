@@ -1,8 +1,9 @@
-
 package com.npj.urlaubsplanung.model;
 
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Mitarbeiter {
@@ -16,9 +17,18 @@ public class Mitarbeiter {
 	private String email;
 	private String passwortHash;
 
+	@OneToOne(mappedBy = "mitarbeiter", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private Mitarbeiterdaten mitarbeiterdaten;
+
+	@OneToMany(mappedBy = "mitarbeiter", cascade = CascadeType.REMOVE, orphanRemoval = true)	
+	private List<Urlaubsantrag> urlaubsantrag = new ArrayList<>();
+
+	@OneToOne(mappedBy = "teamleiter")
+	private Team team;
+
 	@ManyToOne
-	@JoinColumn(name = "admin_role_id")
-	private AdminRole adminRole;
+	@JoinColumn(name = "user_role_id")
+	private UserRole userRole;
 
 	private Boolean aktiv = true;
 	private Integer loginVersuche = 0;
@@ -28,11 +38,11 @@ public class Mitarbeiter {
 	public Mitarbeiter() {
 	}
 
-	public Mitarbeiter(String vorname, String nachname, String email, AdminRole adminRole) {
+	public Mitarbeiter(String vorname, String nachname, String email, UserRole userRole) {
 		this.vorname = vorname;
 		this.nachname = nachname;
 		this.email = email;
-		this.adminRole = adminRole;
+		this.userRole = userRole;
 	}
 
 	public Integer getId() {
@@ -75,12 +85,28 @@ public class Mitarbeiter {
 		this.passwortHash = passwortHash;
 	}
 
-	public AdminRole getAdminRole() {
-		return adminRole;
+	public Mitarbeiterdaten getMitarbeiterdaten() {
+		return mitarbeiterdaten;
 	}
 
-	public void setAdminRole(AdminRole adminRole) {
-		this.adminRole = adminRole;
+	public void setMitarbeiterdaten(Mitarbeiterdaten mitarbeiterdaten) {
+		this.mitarbeiterdaten = mitarbeiterdaten;
+	}
+
+	public Team getTeam() {
+		return team;
+	}
+
+	public void setTeam(Team team) {
+		this.team = team;
+	}
+
+	public UserRole getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(UserRole userRole) {
+		this.userRole = userRole;
 	}
 
 	public Boolean getAktiv() {
@@ -114,4 +140,5 @@ public class Mitarbeiter {
 	public void setLastLogin(Timestamp lastLogin) {
 		this.lastLogin = lastLogin;
 	}
+
 }
