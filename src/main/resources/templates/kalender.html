@@ -3,6 +3,8 @@
   <head>
     <meta charset="ISO-8859-1" />
     <title>Kalender</title>
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <link rel="stylesheet" type="text/css" href="/styles.css" />
     <style>
       .flex {
@@ -28,55 +30,14 @@
     <div class="flex">
       <div class="zwei-drittel" id="kalender"></div>
 
-      <div class="ein-drittel">
-        <table>
-          <thead>
-            <tr>
-              <th>Urlaubstage aus dem Vorjahr</th>
-              <th>Freie Urlaubstage</th>
-              <th>Beantragte Urlaubstage</th>
-              <th>Genommene Urlaubstage</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td th:text="${user.urlaubstage}"></td>
-              <td th:text="${user.resturlaub}"></td>
-              <td th:text="${user.urlaubstage}"></td>
-              <td th:text="${user.resturlaub}"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Bezeichnung</th>
-              <th>Startdatum</th>
-              <th>Enddatum</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="urlaubstag: ${urlaubstage}">
-              <td th:text="${urlaubstag.eventName}" />
-              <td
-                th:text="${#temporals.format(urlaubstag.startDate, 'dd.MM.yyyy')}"
-              />
-              <td
-                th:text="${#temporals.format(urlaubstag.endDate, 'dd.MM.yyyy')}"
-              />
-            </tr>
-          </tbody>
-        </table>
+      <div id="urlaub-tabellen-container" class="ein-drittel">
+        <div th:replace="~{common/kalender-tabellen :: kalenderTabellen}"></div>
       </div>
     </div>
 
     <dialog class="kalenderForm" id="eventDialog">
       <h2>Urlaub beantragen</h2>
       <form id="eventForm" method="dialog">
-        <label for="eventName">Bezeichnung:</label>
-        <input type="text" id="eventName" name="eventName" required />
-
         <div>
           <label for="startDate">Startdatum:</label>
           <input type="date" id="startDate" name="startDate" required />

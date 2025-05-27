@@ -2,31 +2,56 @@
 <html xmlns:th="https://www.thymleaf.org">
   <head>
     <meta charset="ISO-8859-1" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <title>Mitarbeiter</title>
     <link rel="stylesheet" type="text/css" href="/styles.css" />
+    <script src="/js/mitarbeiter.js"></script>
   </head>
   <body>
     <div
       th:replace="~{common/header :: header('Mitarbeiter-Verwaltung')}"
     ></div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Username</th>
-          <th>Password</th>
-          <th>Urlaubstage</th>
-          <th>Resturlaub</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="u: ${user}">
-          <td th:text="${u.username}" />
-          <td th:text="${u.password}" />
-          <td th:text="${u.urlaubstage}" />
-          <td th:text="${u.resturlaub}" />
-        </tr>
-      </tbody>
-    </table>
+    <button id="mitarbeiter-anlegen-btn" class="btn btn-primary" type="button">
+      Mitarbeiter anlegen
+    </button>
+
+    <div id="mitarbeiter-tabelle-container">
+      <div
+        th:replace="~{common/mitarbeiter-tabelle :: mitarbeiterTabelle}"
+      ></div>
+    </div>
+
+    <dialog id="mitarbeiter-anlegen-dialog">
+      <form method="dialog" id="mitarbeiter-anlegen-form">
+        <label>Vorname: <input type="text" name="vorname" required /></label
+        ><br />
+        <label>Nachname: <input type="text" name="nachname" required /></label
+        ><br />
+        <label>Passwort: <input type="text" name="passwort" required /></label
+        ><br />
+        <label
+          >UrlaubstageProJahr:
+          <input type="number" name="urlaubstageProJahr" required /></label
+        ><br />
+        <label
+          >Abteilung:
+          <select name="team" id="team-select" required>
+            <option value="">Bitte wählen...</option>
+          </select>
+        </label>
+        <br />
+        <label
+          >Rolle:
+          <select name="rolle" id="rolle-select" required>
+            <option value="">Bitte wählen...</option>
+          </select>
+        </label>
+        <br />
+        <button type="submit">Speichern</button>
+        <button type="button" id="anlegen-abbrechen-btn">Abbrechen</button>
+      </form>
+    </dialog>
   </body>
 </html>

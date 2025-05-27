@@ -1,12 +1,13 @@
 package com.npj.urlaubsplanung.security;
 
-import com.npj.urlaubsplanung.model.Mitarbeiter;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import com.npj.urlaubsplanung.model.Mitarbeiter;
 
 public class LoginDetails implements UserDetails {
 	private static final long serialVersionUID = 1L;

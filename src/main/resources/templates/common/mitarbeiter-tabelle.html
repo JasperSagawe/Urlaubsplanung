@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymleaf.org">
+  <body>
+    <div th:fragment="mitarbeiterTabelle">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Vorname</th>
+            <th>Nachname</th>
+            <th>Email</th>
+            <th>Team</th>
+            <th>Rolle</th>
+            <th>Urlaubstage pro Jahr</th>
+            <th>Freie Urlaubstage</th>
+            <th>Löschen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="m : ${mitarbeiter}">
+            <td th:text="${m.id}"></td>
+            <td th:text="${m.vorname}"></td>
+            <td th:text="${m.nachname}"></td>
+            <td th:text="${m.email}"></td>
+            <td th:text="${m.team} ? ${m.team.name} : 'Kein Team'"></td>
+            <td th:text="${m.rolle} ? ${m.rolle.name} : 'Kein Admin'"></td>
+            <td th:text="${m.urlaubstageProJahr}"></td>
+            <td th:text="${m.verfuegbareUrlaubstage}"></td>
+            <td>
+              <button
+                class="btn btn-danger delete-mitarbeiter-btn"
+                th:data-id="${m.id}"
+              >
+                Löschen
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

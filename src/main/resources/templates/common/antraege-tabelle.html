@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymleaf.org">
+  <body>
+    <div th:fragment="antraegeTabelle">
+      <table>
+        <thead>
+          <tr>
+            <th>Bezeichnung</th>
+            <th>Startdatum</th>
+            <th>Enddatum</th>
+            <th>Status</th>
+            <th sec:authorize="!hasRole('KEIN_ADMIN')">Genehmigen</th>
+            <th sec:authorize="!hasRole('KEIN_ADMIN')">Ablehnen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="urlaubstag: ${urlaubstage}">
+            <td th:text="${urlaubstag.eventName}"></td>
+            <td
+              th:text="${#temporals.format(urlaubstag.startDate, 'dd.MM.yyyy')}"
+            ></td>
+            <td
+              th:text="${#temporals.format(urlaubstag.endDate, 'dd.MM.yyyy')}"
+            ></td>
+            <td th:text="${urlaubstag.status.getDisplayName()}"></td>
+            <td sec:authorize="!hasRole('KEIN_ADMIN')">
+              <button
+                class="btn btn-danger genehmigen-urlaub-btn"
+                th:data-id="${urlaubstag.id}"
+                th:disabled="${urlaubstag.status.name() != 'BEANTRAGT'}"
+              >
+                Genehmigen
+              </button>
+            </td>
+            <td sec:authorize="!hasRole('KEIN_ADMIN')">
+              <button
+                class="btn btn-danger ablehnen-urlaub-btn"
+                th:data-id="${urlaubstag.id}"
+                th:disabled="${urlaubstag.status.name() != 'BEANTRAGT'}"
+              >
+                Ablehnen
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
