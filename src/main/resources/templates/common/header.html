@@ -10,16 +10,9 @@
           <span></span>
         </div>
         <div class="navMenu">
-          <a th:href="@{/}">Startseite</a>
           <a th:href="@{/kalender}">Kalender</a>
-          <a th:href="@{/verwaltung/mitarbeiter}">Mitarbeiter</a>
           <a th:href="@{/antraege}">Anträge</a>
-          <a
-            th:href="@{/verwaltung}"
-            class="test"
-            sec:authorize="hasRole('ADMIN')"
-            >Verwaltung</a
-          >
+          <a th:href="@{/verwaltung/mitarbeiter}">Mitarbeiter</a>
           <a th:href="@{/verwaltung/abteilungen}">Abteilungen</a>
           <a
             href="#"
