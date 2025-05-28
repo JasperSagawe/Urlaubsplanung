@@ -116,7 +116,7 @@ public class UrlaubstagService {
 			}
 
 			Urlaubsantrag urlaubsantrag = new Urlaubsantrag(mitarbeiter, urlaubstagDto.getStartDate(),
-					urlaubstagDto.getEndDate(), 0, null);
+					urlaubstagDto.getEndDate(), 0);
 
 			Abteilung abteilung = mitarbeiter.getMitarbeiterdaten().getAbteilung();
 			int abteilungMaxUrlaubProzent = abteilung.getMaxUrlaubProzent();

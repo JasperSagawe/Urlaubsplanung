@@ -4,25 +4,6 @@
     <meta charset="ISO-8859-1" />
     <title>Urlaubsplanung</title>
     <link rel="stylesheet" type="text/css" href="/styles.css" />
+    <meta http-equiv="refresh" content="1; url=/kalender" />
   </head>
-  <body>
-    <div th:replace="~{common/header :: header('Startseite')}"></div>
-    <p>
-      Willkommen,
-      <span
-        th:with="user=${#authentication.principal}"
-        th:text="${user.mitarbeiter.vorname} + ' ' + ${user.mitarbeiter.nachname}"
-        >User</span
-      >!
-    </p>
-
-    <p>E-Mail: <span th:text="${#authentication.name}">EMail</span></p>
-
-    Das ist einfach die Startseite.
-
-    <div>
-      Weiterleitung zum Kalender zum testen.
-      <a th:href="@{/kalender}">Kalender</a>
-    </div>
-  </body>
 </html>

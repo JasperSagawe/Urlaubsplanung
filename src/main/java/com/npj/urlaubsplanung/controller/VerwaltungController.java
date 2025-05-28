@@ -25,11 +25,6 @@ class VerwaltungController {
 		this.verwaltungService = verwaltungService;
 	}
 
-	@GetMapping()
-	String verwaltung() {
-		return "verwaltung";
-	}
-
 	@GetMapping("/mitarbeiter")
 	public String mitarbeiter(Model model) {
 		Iterable<MitarbeiterDto> mitarbeiter = verwaltungService.getMitarbeiter();
