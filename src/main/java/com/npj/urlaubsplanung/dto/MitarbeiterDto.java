@@ -6,8 +6,6 @@ public class MitarbeiterDto {
 	private String vorname;
 	private String nachname;
 	private String email;
-
-	// Nur zum Erstellen des Nutzers
 	private String passwort;
 	private SelectDto abteilung;
 	private SelectDto rolle;

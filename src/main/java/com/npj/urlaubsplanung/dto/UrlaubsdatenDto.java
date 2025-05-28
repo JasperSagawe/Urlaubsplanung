@@ -6,15 +6,15 @@ public class UrlaubsdatenDto {
 
 	private int urlaubVorjahr;
 	private int offeneUrlaubstage;
-	private int beantragteUrlaubstage;
+	private int geplanteUrlaubstage;
 	private int genommeneUrlaubstage;
 	private List<UrlaubstagDto> urlaubstage;
 
-	public UrlaubsdatenDto(int urlaubVorjahr, int offeneUrlaubstage, int beantragteUrlaubstage,
+	public UrlaubsdatenDto(int urlaubVorjahr, int offeneUrlaubstage, int geplanteUrlaubstage,
 			int genommeneUrlaubstage, List<UrlaubstagDto> urlaubstage) {
 		this.urlaubVorjahr = urlaubVorjahr;
 		this.offeneUrlaubstage = offeneUrlaubstage;
-		this.beantragteUrlaubstage = beantragteUrlaubstage;
+		this.geplanteUrlaubstage = geplanteUrlaubstage;
 		this.genommeneUrlaubstage = genommeneUrlaubstage;
 		this.urlaubstage = urlaubstage;
 	}
@@ -35,12 +35,12 @@ public class UrlaubsdatenDto {
 		this.offeneUrlaubstage = offeneUrlaubstage;
 	}
 
-	public int getBeantragteUrlaubstage() {
-		return beantragteUrlaubstage;
+	public int getGeplanteUrlaubstage() {
+		return geplanteUrlaubstage;
 	}
 
-	public void setBeantragteUrlaubstage(int beantragteUrlaubstage) {
-		this.beantragteUrlaubstage = beantragteUrlaubstage;
+	public void setGeplanteUrlaubstage(int geplanteUrlaubstage) {
+		this.geplanteUrlaubstage = geplanteUrlaubstage;
 	}
 
 	public int getGenommeneUrlaubstage() {

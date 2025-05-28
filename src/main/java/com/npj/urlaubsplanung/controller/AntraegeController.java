@@ -36,20 +36,21 @@ public class AntraegeController {
 	public String antraegeTabelleFragment(@AuthenticationPrincipal LoginDetails userDetails, Model model) {
 		Abteilung abteilung = userDetails.getMitarbeiter().getMitarbeiterdaten().getAbteilung();
 		List<UrlaubstagDto> urlaubstage = urlaubstagService.getUrlaubstageByAbteilung(abteilung.getId());
+
 		model.addAttribute("abteilungsname", abteilung.getName());
 		model.addAttribute("urlaubstage", urlaubstage);
 		return "common/antraege-tabelle :: antraegeTabelle";
 	}
 
-	@PostMapping("/genehmigen/{id}")
 	@ResponseBody
-	public void genehmigeUrlaub(@PathVariable Long id) {
-		urlaubstagService.genehmigeUrlaubstag(id);
+	@PostMapping("/genehmigen/{id}")
+	public void genehmigeUrlaub(@PathVariable int id) {
+		urlaubstagService.genehmigeUrlaubsantrag(id);
 	}
 
-	@PostMapping("/ablehnen/{id}")
 	@ResponseBody
-	public void lehneUrlaubAb(@PathVariable Long id) {
-		urlaubstagService.lehneUrlaubstagAb(id);
+	@PostMapping("/ablehnen/{id}")
+	public void lehneUrlaubAb(@PathVariable int id) {
+		urlaubstagService.lehneUrlaubsantragAb(id);
 	}
 }

@@ -11,7 +11,7 @@
   <body>
     <div th:replace="~{common/header :: header('Abteilungen')}"></div>
 
-    <button id="abteilung-anlegen-btn" class="btn btn-primary" type="button">
+    <button sec:authorize="hasRole('ADMIN')" id="abteilung-anlegen-btn" class="btn btn-primary" type="button">
       Abteilung anlegen
     </button>
 
@@ -23,17 +23,19 @@
 
     <dialog id="abteilung-anlegen-dialog">
       <form method="dialog" id="abteilung-anlegen-form">
-        <label>Name: <input type="text" name="name" required /></label><br />
+        <label> Name: <input type="text" name="name" required /> </label>
+        <br />
         <label>
-          Urlaubslimit: <input type="number" name="limit" required />
+          Urlaubslimit: <input type="number" name="limit" min="1" required />
         </label>
         <br />
         <label
           >Abteilungsleiter:
           <select name="abteilungsleiter" id="mitarbeiter-select" required>
             <option value="">Bitte wählen</option>
-          </select></label
-        ><br />
+          </select>
+        </label>
+        <br />
         <button type="submit">Speichern</button>
         <button type="button" id="anlegen-abbrechen-btn">Abbrechen</button>
       </form>

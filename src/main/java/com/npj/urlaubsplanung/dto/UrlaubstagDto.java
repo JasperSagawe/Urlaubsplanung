@@ -6,15 +6,15 @@ public class UrlaubstagDto {
 
 	private Integer id;
 	private String eventName;
-	private LocalDate startDate;
-	private LocalDate endDate;
+	private LocalDate startdatum;
+	private LocalDate enddatum;
 	private StatusDto status;
 
-	public UrlaubstagDto(Integer id, String eventName, LocalDate startDate, LocalDate endDate, StatusDto status) {
+	public UrlaubstagDto(Integer id, String eventName, LocalDate startdatum, LocalDate enddatum, StatusDto status) {
 		this.id = id;
 		this.eventName = eventName;
-		this.startDate = startDate;
-		this.endDate = endDate;
+		this.startdatum = startdatum;
+		this.enddatum = enddatum;
 		this.status = status;
 	}
 
@@ -34,20 +34,20 @@ public class UrlaubstagDto {
 		this.eventName = eventName;
 	}
 
-	public LocalDate getStartDate() {
-		return startDate;
+	public LocalDate getStartdatum() {
+		return startdatum;
 	}
 
-	public void setStartDate(LocalDate startDate) {
-		this.startDate = startDate;
+	public void setStartdatum(LocalDate startdatum) {
+		this.startdatum = startdatum;
 	}
 
-	public LocalDate getEndDate() {
-		return endDate;
+	public LocalDate getEnddatum() {
+		return enddatum;
 	}
 
-	public void setEndDate(LocalDate endDate) {
-		this.endDate = endDate;
+	public void setEnddatum(LocalDate enddatum) {
+		this.enddatum = enddatum;
 	}
 
 	public StatusDto getStatus() {

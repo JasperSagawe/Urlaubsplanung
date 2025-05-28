@@ -2,9 +2,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const calendarEl = document.getElementById("kalender");
   const dialog = document.getElementById("eventDialog");
   const form = document.getElementById("eventForm");
-  const endDateInput = form.endDate;
-  const startDateInput = form.startDate;
-  const endDateError = document.getElementById("endDateError");
+  const enddatumInput = form.enddatum;
+  const startdatumInput = form.startdatum;
+  const enddatumError = document.getElementById("enddatumError");
   const cancelBtn = document.getElementById("cancel");
   const csrfToken = document
     .querySelector('meta[name="_csrf"]')
@@ -35,8 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   });
 
-  endDateInput.addEventListener("input", validateDateInputs);
-  startDateInput.addEventListener("input", validateDateInputs);
+  enddatumInput.addEventListener("input", validateDateInputs);
+  startdatumInput.addEventListener("input", validateDateInputs);
   form.addEventListener("submit", handleFormSubmit);
   cancelBtn.addEventListener("click", () => dialog.close());
 
@@ -81,44 +81,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function handleSelect(event) {
     dialog.showModal();
-    form.startDate.value = event.startStr;
+    form.startdatum.value = event.startStr;
     if (event.endStr) {
-      const endDate = new Date(event.endStr);
-      endDate.setDate(endDate.getDate() - 1);
-      form.endDate.value = endDate.toISOString().slice(0, 10);
+      const enddatum = new Date(event.endStr);
+      enddatum.setDate(enddatum.getDate() - 1);
+      form.enddatum.value = enddatum.toISOString().slice(0, 10);
     } else {
-      form.endDate.value = event.startStr;
+      form.enddatum.value = event.startStr;
     }
-    resetEndDateError();
+    resetEnddatumError();
   }
 
   function validateDateInputs() {
-    const start = new Date(startDateInput.value);
-    const end = new Date(endDateInput.value);
+    const start = new Date(startdatumInput.value);
+    const end = new Date(enddatumInput.value);
     if (end < start) {
-      endDateError.style.display = "block";
-      endDateInput.style.borderColor = "red";
+      enddatumError.style.display = "block";
+      enddatumInput.style.borderColor = "red";
     } else {
-      resetEndDateError();
+      resetEnddatumError();
     }
   }
 
-  function resetEndDateError() {
-    endDateError.style.display = "none";
-    endDateInput.style.borderColor = "";
+  function resetEnddatumError() {
+    enddatumError.style.display = "none";
+    enddatumInput.style.borderColor = "";
   }
 
   function handleFormSubmit(event) {
     event.preventDefault();
-    const startDate = form.startDate.value;
-    const endDate = form.endDate.value;
+    const startdatum = form.startdatum.value;
+    const enddatum = form.enddatum.value;
 
-    if (new Date(startDate) > new Date(endDate)) {
+    if (new Date(startdatum) > new Date(enddatum)) {
       alert("Das Enddatum muss nach dem Startdatum sein.");
       return;
     }
 
-    if (startDate && endDate) {
+    if (startdatum && enddatum) {
       const headers = {
         "Content-Type": "application/json",
       };
@@ -129,8 +129,8 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "POST",
         headers: headers,
         body: JSON.stringify({
-          startDate,
-          endDate,
+          startdatum,
+          enddatum,
         }),
       })
         .then(async (response) => {
