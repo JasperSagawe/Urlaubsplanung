@@ -32,8 +32,8 @@ public class Mitarbeiter {
 	@OneToMany(mappedBy = "mitarbeiter", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Urlaubsantrag> urlaubsantrag = new ArrayList<>();
 
-	@OneToOne(mappedBy = "teamleiter")
-	private Team team;
+	@OneToOne(mappedBy = "abteilungsleiter")
+	private Abteilung abteilung;
 
 	@ManyToOne
 	@JoinColumn(name = "user_role_id")
@@ -102,12 +102,12 @@ public class Mitarbeiter {
 		this.mitarbeiterdaten = mitarbeiterdaten;
 	}
 
-	public Team getTeam() {
-		return team;
+	public Abteilung getAbteilung() {
+		return abteilung;
 	}
 
-	public void setTeam(Team team) {
-		this.team = team;
+	public void setAbteilung(Abteilung abteilung) {
+		this.abteilung = abteilung;
 	}
 
 	public UserRole getUserRole() {

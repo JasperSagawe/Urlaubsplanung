@@ -24,7 +24,7 @@ import de.focus_shift.jollyday.core.Holiday;
 import com.npj.urlaubsplanung.dto.UrlaubsdatenDto;
 import com.npj.urlaubsplanung.dto.UrlaubstagDto;
 import com.npj.urlaubsplanung.exception.MaximaleUrlaubstageUeberschrittenException;
-import com.npj.urlaubsplanung.exception.TeamUrlaubsgrenzeErreichtException;
+import com.npj.urlaubsplanung.exception.AbteilungUrlaubsgrenzeErreichtException;
 import com.npj.urlaubsplanung.service.UrlaubstagService;
 import com.npj.urlaubsplanung.security.LoginDetails;
 
@@ -58,11 +58,11 @@ class KalenderController {
 	@GetMapping("/urlaubstage")
 	public List<Map<String, Object>> getUrlaubstage(@AuthenticationPrincipal LoginDetails userDetails) {
 		List<Map<String, Object>> events;
-		Integer teamId = userDetails.getMitarbeiter().getMitarbeiterdaten().getTeam().getId();
+		Integer abteilungId = userDetails.getMitarbeiter().getMitarbeiterdaten().getAbteilung().getId();
 
-		List<UrlaubstagDto> urlaubstage = (teamId != null)
-			? urlaubstagService.getUrlaubstageByTeam(teamId)
-			: urlaubstagService.getUrlaubstage();
+		List<UrlaubstagDto> urlaubstage = (abteilungId != null)
+				? urlaubstagService.getUrlaubstageByAbteilung(abteilungId)
+				: urlaubstagService.getUrlaubstage();
 
 		events = urlaubstage.stream().map(u -> {
 			Map<String, Object> event = new HashMap<>();
@@ -103,8 +103,8 @@ class KalenderController {
 			String message = "DU_KANNST_MAXIMAL_" + ex.getVerbleibendeTage() + "_BEANTRAGEN";
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 
-		} catch (TeamUrlaubsgrenzeErreichtException ex) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("ZU_VIELE_TEAMMITGLIEDER_IM_URLAUB");
+		} catch (AbteilungUrlaubsgrenzeErreichtException ex) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("ZU_VIELE_ABTEILUNGSMITGLIEDER_IM_URLAUB");
 
 		} catch (Exception ex) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

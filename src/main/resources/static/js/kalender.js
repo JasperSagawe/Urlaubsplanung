@@ -29,9 +29,10 @@ document.addEventListener("DOMContentLoaded", function () {
       failure: function () {
         alert("Fehler beim Laden der Urlaubstage!");
       },
-    },	  eventDidMount: function(info) {
-	    info.el.setAttribute('title', info.event.title);
-	  }
+    },
+    eventDidMount: function (info) {
+      info.el.setAttribute("title", info.event.title);
+    },
   });
 
   endDateInput.addEventListener("input", validateDateInputs);
@@ -135,9 +136,9 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(async (response) => {
           if (!response.ok) {
             const errorText = await response.text();
-            if (errorText.includes("ZU_VIELE_TEAMMITGLIEDER_IM_URLAUB")) {
+            if (errorText.includes("ZU_VIELE_ABTEILUNGSMITGLIEDER_IM_URLAUB")) {
               throw new Error(
-                "In diesem Zeitraum nehmen zu viele Teammitglieder Urlaub."
+                "In diesem Zeitraum nehmen zu viele Abteilungsmitglieder Urlaub."
               );
             } else if (errorText.includes("DU_KANNST_MAXIMAL_")) {
               const matches = errorText.match(

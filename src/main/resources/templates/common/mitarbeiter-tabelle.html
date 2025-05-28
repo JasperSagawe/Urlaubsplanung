@@ -9,7 +9,7 @@
             <th>Vorname</th>
             <th>Nachname</th>
             <th>Email</th>
-            <th>Team</th>
+            <th>Abteilung</th>
             <th>Rolle</th>
             <th>Urlaubstage pro Jahr</th>
             <th>Freie Urlaubstage</th>
@@ -22,8 +22,10 @@
             <td th:text="${m.vorname}"></td>
             <td th:text="${m.nachname}"></td>
             <td th:text="${m.email}"></td>
-            <td th:text="${m.team} ? ${m.team.name} : 'Kein Team'"></td>
-            <td th:text="${m.rolle} ? ${m.rolle.name} : 'Kein Admin'"></td>
+            <td
+              th:text="${m.abteilung} ? ${m.abteilung.name} : 'Keine Abteilung'"
+            ></td>
+            <td th:text="${m.rolle} ? ${m.rolle.name} : 'User'"></td>
             <td th:text="${m.urlaubstageProJahr}"></td>
             <td th:text="${m.verfuegbareUrlaubstage}"></td>
             <td>

@@ -9,8 +9,8 @@
             <th>Startdatum</th>
             <th>Enddatum</th>
             <th>Status</th>
-            <th sec:authorize="!hasRole('KEIN_ADMIN')">Genehmigen</th>
-            <th sec:authorize="!hasRole('KEIN_ADMIN')">Ablehnen</th>
+            <th sec:authorize="!hasRole('USER')">Genehmigen</th>
+            <th sec:authorize="!hasRole('USER')">Ablehnen</th>
           </tr>
         </thead>
         <tbody>
@@ -23,7 +23,7 @@
               th:text="${#temporals.format(urlaubstag.endDate, 'dd.MM.yyyy')}"
             ></td>
             <td th:text="${urlaubstag.status.getDisplayName()}"></td>
-            <td sec:authorize="!hasRole('KEIN_ADMIN')">
+            <td sec:authorize="!hasRole('USER')">
               <button
                 class="btn btn-danger genehmigen-urlaub-btn"
                 th:data-id="${urlaubstag.id}"
@@ -32,7 +32,7 @@
                 Genehmigen
               </button>
             </td>
-            <td sec:authorize="!hasRole('KEIN_ADMIN')">
+            <td sec:authorize="!hasRole('USER')">
               <button
                 class="btn btn-danger ablehnen-urlaub-btn"
                 th:data-id="${urlaubstag.id}"

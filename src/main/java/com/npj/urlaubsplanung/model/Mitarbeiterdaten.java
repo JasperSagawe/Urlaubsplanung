@@ -25,8 +25,8 @@ public class Mitarbeiterdaten {
 	private Integer resturlaubVorjahr;
 
 	@ManyToOne
-	@JoinColumn(name = "team_id")
-	private Team team;
+	@JoinColumn(name = "abteilung_id")
+	private Abteilung abteilung;
 
 	public Mitarbeiterdaten() {
 	}
@@ -88,12 +88,12 @@ public class Mitarbeiterdaten {
 		this.resturlaubVorjahr = resturlaubVorjahr;
 	}
 
-	public Team getTeam() {
-		return team;
+	public Abteilung getAbteilung() {
+		return abteilung;
 	}
 
-	public void setTeam(Team team) {
-		this.team = team;
+	public void setAbteilung(Abteilung abteilung) {
+		this.abteilung = abteilung;
 	}
 
 }

@@ -10,8 +10,8 @@ public class UrlaubsdatenDto {
 	private int genommeneUrlaubstage;
 	private List<UrlaubstagDto> urlaubstage;
 
-	public UrlaubsdatenDto(int urlaubVorjahr, int offeneUrlaubstage,
-			int beantragteUrlaubstage, int genommeneUrlaubstage, List<UrlaubstagDto> urlaubstage) {
+	public UrlaubsdatenDto(int urlaubVorjahr, int offeneUrlaubstage, int beantragteUrlaubstage,
+			int genommeneUrlaubstage, List<UrlaubstagDto> urlaubstage) {
 		this.urlaubVorjahr = urlaubVorjahr;
 		this.offeneUrlaubstage = offeneUrlaubstage;
 		this.beantragteUrlaubstage = beantragteUrlaubstage;
