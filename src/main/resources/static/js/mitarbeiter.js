@@ -58,6 +58,39 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  if (anlegenBtn && abteilungSelect) {
+    anlegenBtn.addEventListener("click", function () {
+      fetch("/verwaltung/abteilung-select")
+        .then((response) => response.json())
+        .then((data) => {
+          abteilungSelect.innerHTML =
+            '<option value="">Bitte wählen...</option>';
+          data.forEach((abteilung) => {
+            const option = document.createElement("option");
+            option.value = abteilung.id;
+            option.textContent = abteilung.name;
+            abteilungSelect.appendChild(option);
+          });
+        });
+    });
+  }
+
+  if (anlegenBtn && rolleSelect) {
+    anlegenBtn.addEventListener("click", function () {
+      fetch("/verwaltung/rolle-select")
+        .then((response) => response.json())
+        .then((data) => {
+          rolleSelect.innerHTML = '<option value="">Bitte wählen...</option>';
+          data.forEach((rolle) => {
+            const option = document.createElement("option");
+            option.value = rolle.id;
+            option.textContent = rolle.name;
+            rolleSelect.appendChild(option);
+          });
+        });
+    });
+  }
+
   document.body.addEventListener("click", function (e) {
     if (e.target.classList.contains("delete-mitarbeiter-btn")) {
       if (e.target.dataset.confirming === "true") {
@@ -104,38 +137,5 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => {
         console.error("Fehler beim Laden der Tabelle:", error);
       });
-  }
-
-  if (anlegenBtn && abteilungSelect) {
-    anlegenBtn.addEventListener("click", function () {
-      fetch("/verwaltung/abteilung-select")
-        .then((response) => response.json())
-        .then((data) => {
-          abteilungSelect.innerHTML =
-            '<option value="">Bitte wählen...</option>';
-          data.forEach((abteilung) => {
-            const option = document.createElement("option");
-            option.value = abteilung.id;
-            option.textContent = abteilung.name;
-            abteilungSelect.appendChild(option);
-          });
-        });
-    });
-  }
-
-  if (anlegenBtn && rolleSelect) {
-    anlegenBtn.addEventListener("click", function () {
-      fetch("/verwaltung/rolle-select")
-        .then((response) => response.json())
-        .then((data) => {
-          rolleSelect.innerHTML = '<option value="">Bitte wählen...</option>';
-          data.forEach((rolle) => {
-            const option = document.createElement("option");
-            option.value = rolle.id;
-            option.textContent = rolle.name;
-            rolleSelect.appendChild(option);
-          });
-        });
-    });
   }
 });

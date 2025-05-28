@@ -11,6 +11,8 @@ import com.npj.urlaubsplanung.model.Mitarbeiter;
 @Repository
 public interface MitarbeiterRepository extends JpaRepository<Mitarbeiter, Integer> {
 	Optional<Mitarbeiter> findByEmail(String email);
+	
+	Optional<Mitarbeiter> findByEmailIgnoreCase(String email);
 
 	List<Mitarbeiter> findByAbteilungIsNull();
 }

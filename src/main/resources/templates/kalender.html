@@ -39,17 +39,22 @@
       <h2>Urlaub beantragen</h2>
       <form id="eventForm" method="dialog">
         <div>
-          <label for="startDate">Startdatum:</label>
-          <input type="date" id="startDate" name="startDate" required />
-
-          <label for="endDate">Enddatum:</label>
-          <input type="date" id="endDate" name="endDate" required />
+          <label>
+            Startdatum:
+            <input type="date" id="startdatum" name="startdatum" required />
+          </label>
+          <br />
+          <label>
+            Enddatum:
+            <input type="date" id="enddatum" name="enddatum" required />
+          </label>
           <span
-            id="endDateError"
+            id="enddatumError"
             style="color: red; font-size: 0.9em; display: none"
-            >Das Enddatum muss nach dem Startdatum sein.</span
-          >
+            >Das Enddatum muss nach dem Startdatum sein.
+          </span>
         </div>
+        <br />
 
         <div class="dialogButtons">
           <button class="button" type="submit">Einreichen</button>

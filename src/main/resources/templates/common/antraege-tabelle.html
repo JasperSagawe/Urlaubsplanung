@@ -5,7 +5,7 @@
       <table>
         <thead>
           <tr>
-            <th>Bezeichnung</th>
+            <th>Mitarbeiter</th>
             <th>Startdatum</th>
             <th>Enddatum</th>
             <th>Status</th>
@@ -17,15 +17,15 @@
           <tr th:each="urlaubstag: ${urlaubstage}">
             <td th:text="${urlaubstag.eventName}"></td>
             <td
-              th:text="${#temporals.format(urlaubstag.startDate, 'dd.MM.yyyy')}"
+              th:text="${#temporals.format(urlaubstag.startdatum, 'dd.MM.yyyy')}"
             ></td>
             <td
-              th:text="${#temporals.format(urlaubstag.endDate, 'dd.MM.yyyy')}"
+              th:text="${#temporals.format(urlaubstag.enddatum, 'dd.MM.yyyy')}"
             ></td>
             <td th:text="${urlaubstag.status.getDisplayName()}"></td>
             <td sec:authorize="!hasRole('USER')">
               <button
-                class="btn btn-danger genehmigen-urlaub-btn"
+                class="btn genehmigen-urlaub-btn"
                 th:data-id="${urlaubstag.id}"
                 th:disabled="${urlaubstag.status.name() != 'BEANTRAGT'}"
               >
@@ -34,7 +34,7 @@
             </td>
             <td sec:authorize="!hasRole('USER')">
               <button
-                class="btn btn-danger ablehnen-urlaub-btn"
+                class="btn ablehnen-urlaub-btn"
                 th:data-id="${urlaubstag.id}"
                 th:disabled="${urlaubstag.status.name() != 'BEANTRAGT'}"
               >

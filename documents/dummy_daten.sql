@@ -18,12 +18,12 @@ INSERT INTO user_role (rolle_name) VALUES
 INSERT INTO mitarbeiter (vorname, nachname, email, passwort_hash, user_role_id) VALUES
 ('User', 'Entwicklung', 'user', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', null),
 ('Admin', 'Vertrieb', 'admin', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 3),
-('Lukas', 'Lang', 'lukas@firma.de', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 2),
-('Sophie', 'Kurz', 'sophie@firma.de', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 1),
-('Jonas', 'Fischer', 'jonas@firma.de', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', null),
-('Maria', 'Neumann', 'maria@firma.de', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 3),
-('Max', 'Mustermann', 'max@firma.de', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 2),
-('Anna', 'Beispiel', 'anna@firma.de', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 1);
+('Lukas', 'Lang', 'Lukas.Lang@example.com', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 2),
+('Sophie', 'Kurz', 'Sophie.Kurz@example.com', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 1),
+('Jonas', 'Fischer', 'Jonas.Fischer@example.com', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', null),
+('Maria', 'Neumann', 'Maria.Neumann@example.com', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 3),
+('Max', 'Mustermann', 'Max.Mustermann@example.com', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 2),
+('Anna', 'Beispiel', 'Anna.Beispiel@example.com', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 1);
 
 -- 3. Abteilung (optional mit abteilungsleiter_id – Beispielhaft: abteilungsleiter ist Mitarbeiter 3 oder 4)
 INSERT INTO abteilung (name, max_urlaub_prozent, abteilungsleiter_id) VALUES

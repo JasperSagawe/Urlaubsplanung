@@ -7,7 +7,7 @@
           <tr>
             <th>Urlaubstage aus dem Vorjahr</th>
             <th>Freie Urlaubstage</th>
-            <th>Beantragte Urlaubstage</th>
+            <th>Geplante Urlaubstage</th>
             <th>Genommene Urlaubstage</th>
           </tr>
         </thead>
@@ -15,7 +15,7 @@
           <tr>
             <td th:text="${user.urlaubVorjahr}"></td>
             <td th:text="${user.offeneUrlaubstage}"></td>
-            <td th:text="${user.beantragteUrlaubstage}"></td>
+            <td th:text="${user.geplanteUrlaubstage}"></td>
             <td th:text="${user.genommeneUrlaubstage}"></td>
           </tr>
         </tbody>
@@ -24,7 +24,6 @@
       <table>
         <thead>
           <tr>
-            <th>Bezeichnung</th>
             <th>Startdatum</th>
             <th>Enddatum</th>
             <th>Status</th>
@@ -33,17 +32,16 @@
         </thead>
         <tbody>
           <tr th:each="urlaubstag: ${urlaubstage}">
-            <td th:text="${urlaubstag.eventName}"></td>
             <td
-              th:text="${#temporals.format(urlaubstag.startDate, 'dd.MM.yyyy')}"
+              th:text="${#temporals.format(urlaubstag.startdatum, 'dd.MM.yyyy')}"
             ></td>
             <td
-              th:text="${#temporals.format(urlaubstag.endDate, 'dd.MM.yyyy')}"
+              th:text="${#temporals.format(urlaubstag.enddatum, 'dd.MM.yyyy')}"
             ></td>
             <td th:text="${urlaubstag.status.getDisplayName()}"></td>
             <td>
               <button
-                class="btn btn-danger delete-urlaub-btn"
+                class="btn delete-urlaub-btn"
                 th:data-id="${urlaubstag.id}"
                 th:disabled="${urlaubstag.status.name() == 'GENOMMEN'}"
               >
