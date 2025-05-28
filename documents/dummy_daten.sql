@@ -3,17 +3,16 @@ TRUNCATE TABLE
     urlaubsantrag,
     urlaubsstatus,
     mitarbeiterdaten,
-    team,
+    abteilung,
     mitarbeiter,
     user_role
 RESTART IDENTITY CASCADE;
 
--- 1. Admin-Rollen
+-- 1. User-Rollen
 INSERT INTO user_role (rolle_name) VALUES
-('Kein Admin'),
-('Team-Admin'),
-('Bereichs-Admin'),
-('Super-Admin');
+('User'),
+('Abteilungsleiter'),
+('Admin');
 
 -- 2. Mitarbeiter (inkl. aktiv-Flag)
 INSERT INTO mitarbeiter (vorname, nachname, email, passwort_hash, user_role_id, aktiv) VALUES
@@ -26,16 +25,16 @@ INSERT INTO mitarbeiter (vorname, nachname, email, passwort_hash, user_role_id, 
 ('Max', 'Mustermann', 'max@firma.de', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 2, true),
 ('Anna', 'Beispiel', 'anna@firma.de', '$2a$12$wkN76WF49Sh8m4DBo4PHqOfnu5f6CP/8lfNgMqLQCoruXhvg4cRke', 1, true);
 
--- 3. Teams (optional mit teamleiter_id – Beispielhaft: teamleiter ist Mitarbeiter 3 oder 4)
-INSERT INTO team (name, max_urlaub_prozent, teamleiter_id) VALUES
+-- 3. Abteilung (optional mit abteilungsleiter_id – Beispielhaft: abteilungsleiter ist Mitarbeiter 3 oder 4)
+INSERT INTO abteilung (name, max_urlaub_prozent, abteilungsleiter_id) VALUES
 ('Entwicklung', 40, 3),
 ('Vertrieb', 35, 4);
 
--- 4. Mitarbeiterdaten (statt Urlaubsdaten, jetzt mit team_id)
+-- 4. Mitarbeiterdaten (statt Urlaubsdaten, jetzt mit abteilung_id)
 INSERT INTO mitarbeiterdaten (
     mitarbeiter_id, verfuegbare_urlaubstage,
     urlaubstage_pro_jahr, aktuelles_jahr,
-    resturlaub_vorjahr, team_id
+    resturlaub_vorjahr, abteilung_id
 ) VALUES
 (1, 30, 30, 2025, 5, 1),
 (2, 25, 28, 2025, 3, 2),

@@ -22,7 +22,7 @@ public class LoginDetails implements UserDetails {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		String rolle = mitarbeiter.getUserRole() != null
 				? mitarbeiter.getUserRole().getRolleName().toUpperCase().replace("-", "_").replace(" ", "_")
-				: "KEIN_ADMIN";
+				: "USER";
 
 		return List.of(new SimpleGrantedAuthority("ROLE_" + rolle));
 	}

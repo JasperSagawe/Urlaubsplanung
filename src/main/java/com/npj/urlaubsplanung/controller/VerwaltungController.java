@@ -47,8 +47,8 @@ class VerwaltungController {
 	@ResponseBody
 	@PostMapping("/mitarbeiter/save")
 	public ResponseEntity<Void> saveMitarbeiter(@RequestBody MitarbeiterDto mitarbeiterDto) {
-		System.out.println(
-				"MitarbeiterDto empfangen: " + mitarbeiterDto.getTeam().getName() + mitarbeiterDto.getTeam().getId());
+		System.out.println("MitarbeiterDto empfangen: " + mitarbeiterDto.getAbteilung().getName()
+				+ mitarbeiterDto.getAbteilung().getId());
 		verwaltungService.saveMitarbeiter(mitarbeiterDto);
 		return ResponseEntity.ok().build();
 	}
@@ -93,10 +93,10 @@ class VerwaltungController {
 	}
 
 	@ResponseBody
-	@GetMapping("/team-select")
-	public ResponseEntity<Iterable<SelectDto>> getTeamSelect() {
-		Iterable<SelectDto> teams = verwaltungService.getTeamSelect();
-		return ResponseEntity.ok(teams);
+	@GetMapping("/abteilung-select")
+	public ResponseEntity<Iterable<SelectDto>> getAbteilungSelect() {
+		Iterable<SelectDto> abteilungen = verwaltungService.getAbteilungSelect();
+		return ResponseEntity.ok(abteilungen);
 	}
 
 	@ResponseBody

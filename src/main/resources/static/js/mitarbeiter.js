@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const dialog = document.getElementById("mitarbeiter-anlegen-dialog");
   const abbrechenBtn = document.getElementById("anlegen-abbrechen-btn");
   const form = document.getElementById("mitarbeiter-anlegen-form");
-  const teamSelect = document.getElementById("team-select");
+  const abteilungSelect = document.getElementById("abteilung-select");
   const rolleSelect = document.getElementById("rolle-select");
 
   if (anlegenBtn && dialog && abbrechenBtn && form) {
@@ -25,9 +25,9 @@ document.addEventListener("DOMContentLoaded", function () {
         passwort: form.passwort.value,
         urlaubstageProJahr: form.urlaubstageProJahr.value,
         verfuegbareUrlaubstage: form.urlaubstageProJahr.value,
-        team: {
-          id: form.team.value,
-          name: form.team.options[form.team.selectedIndex].text,
+        abteilung: {
+          id: form.abteilung.value,
+          name: form.abteilung.options[form.abteilung.selectedIndex].text,
         },
         rolle: {
           id: form.rolle.value,
@@ -106,17 +106,18 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  if (anlegenBtn && teamSelect) {
+  if (anlegenBtn && abteilungSelect) {
     anlegenBtn.addEventListener("click", function () {
-      fetch("/verwaltung/team-select")
+      fetch("/verwaltung/abteilung-select")
         .then((response) => response.json())
         .then((data) => {
-          teamSelect.innerHTML = '<option value="">Bitte wählen...</option>';
-          data.forEach((team) => {
+          abteilungSelect.innerHTML =
+            '<option value="">Bitte wählen...</option>';
+          data.forEach((abteilung) => {
             const option = document.createElement("option");
-            option.value = team.id;
-            option.textContent = team.name;
-            teamSelect.appendChild(option);
+            option.value = abteilung.id;
+            option.textContent = abteilung.name;
+            abteilungSelect.appendChild(option);
           });
         });
     });
@@ -128,10 +129,10 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((response) => response.json())
         .then((data) => {
           rolleSelect.innerHTML = '<option value="">Bitte wählen...</option>';
-          data.forEach((team) => {
+          data.forEach((rolle) => {
             const option = document.createElement("option");
-            option.value = team.id;
-            option.textContent = team.name;
+            option.value = rolle.id;
+            option.textContent = rolle.name;
             rolleSelect.appendChild(option);
           });
         });
