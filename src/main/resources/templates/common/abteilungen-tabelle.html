@@ -9,6 +9,7 @@
             <th>Anzahl der Mitarbeiter</th>
             <th>Abteilungsleiter</th>
             <th>Urlaubslimit</th>
+            <th sec:authorize="hasRole('ADMIN')">Bearbeiten</th>
             <th sec:authorize="hasRole('ADMIN')">Löschen</th>
           </tr>
         </thead>
@@ -20,6 +21,18 @@
               th:text="${a.abteilungsleiter} ? ${a.abteilungsleiter.name} : 'kein Abteilungsleiter'"
             ></td>
             <td th:text="${a.maxUrlaubProzent} + '%'"></td>
+            <td sec:authorize="hasRole('ADMIN')">
+              <button
+                class="btn bearbeite-abteilung-btn"
+                th:data-id="${a.id}"
+                th:data-name="${a.name}"
+                th:data-maxUrlaubProzent="${a.maxUrlaubProzent}"
+                th:data-abteilungsleiter-id="${a.abteilungsleiter} ? ${a.abteilungsleiter.id} : ''"
+                th:data-abteilungsleiter-name="${a.abteilungsleiter} ? ${a.abteilungsleiter.name} : ''"
+              >
+                Bearbeiten
+              </button>
+            </td>
             <td sec:authorize="hasRole('ADMIN')">
               <button class="btn delete-abteilung-btn" th:data-id="${a.id}">
                 Löschen
