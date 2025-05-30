@@ -103,7 +103,16 @@ public class VerwaltungService {
 	}
 
 	public void saveAbteilung(AbteilungDto abteilungDto) {
-		Abteilung abteilung = new Abteilung(abteilungDto.getName(), abteilungDto.getMaxUrlaubProzent());
+		Abteilung abteilung;
+		if (abteilungDto.getId() > 0) {
+			abteilung = abteilungRepository.findById(abteilungDto.getId())
+					.orElseThrow(() -> new EntityNotFoundException("Abteilung nicht gefunden"));
+			abteilung.setName(abteilungDto.getName());
+			abteilung.setMaxUrlaubProzent(abteilungDto.getMaxUrlaubProzent());
+		} else {
+			abteilung = new Abteilung(abteilungDto.getName(), abteilungDto.getMaxUrlaubProzent());
+		}
+
 		Mitarbeiter mitarbeiter = mitarbeiterRepository.findById(abteilungDto.getAbteilungsleiter().getId())
 				.orElseThrow(() -> new EntityNotFoundException("Mitarbeiter nicht gefunden"));
 

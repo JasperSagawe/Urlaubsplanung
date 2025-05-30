@@ -12,13 +12,23 @@ document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("abteilung-anlegen-form");
   const mitarbeiterSelect = document.getElementById("mitarbeiter-select");
 
-  if (anlegenBtn && dialog && abbrechenBtn && form) {
-    anlegenBtn.addEventListener("click", () => dialog.showModal());
-    abbrechenBtn.addEventListener("click", () => dialog.close());
+  let abteilungId = null;
 
+  if (anlegenBtn && dialog && abbrechenBtn && form) {
+    anlegenBtn.addEventListener("click", () => {
+      abteilungId = null;
+      form.reset();
+      ladeMitarbeiterSelect();
+      dialog.showModal();
+    });
+    abbrechenBtn.addEventListener("click", () => dialog.close());
+  }
+
+  if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       const data = {
+        id: abteilungId ?? null,
         name: form.name.value,
         maxUrlaubProzent: form.limit.value,
         abteilungsleiter: {
@@ -28,19 +38,14 @@ document.addEventListener("DOMContentLoaded", function () {
           ].text,
         },
       };
-      const headers = {
-        "Content-Type": "application/json",
-      };
-      if (csrfHeader && csrfToken) {
-        headers[csrfHeader] = csrfToken;
-      }
       fetch("/verwaltung/abteilungen/save", {
         method: "POST",
-        headers: headers,
+        headers: getHeaders(),
         body: JSON.stringify(data),
       })
         .then((response) => {
           if (response.ok) {
+            abteilungId = null;
             ladeTabelleNeu();
             dialog.close();
             form.reset();
@@ -52,44 +57,60 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  if (anlegenBtn && mitarbeiterSelect) {
-    anlegenBtn.addEventListener("click", function () {
-      fetch("/verwaltung/mitarbeiter-select")
-        .then((response) => response.json())
-        .then((data) => {
-          mitarbeiterSelect.innerHTML =
-            '<option value="">Bitte wählen...</option>';
-          data.forEach((mitarbeiter) => {
+  document.body.addEventListener("click", function (e) {
+    if (e.target.classList.contains("bearbeite-abteilung-btn")) {
+      abteilungId = e.target.getAttribute("data-id");
+      form.name.value = e.target.getAttribute("data-name");
+      form.limit.value = e.target.getAttribute("data-maxUrlaubProzent");
+      ladeMitarbeiterSelect(
+        e.target.getAttribute("data-abteilungsleiter-id"),
+        e.target.getAttribute("data-abteilungsleiter-name")
+      );
+      dialog.showModal();
+    }
+  });
+
+  function ladeMitarbeiterSelect(selectedId, selectedName) {
+    fetch("/verwaltung/mitarbeiter-select")
+      .then((response) => response.json())
+      .then((data) => {
+        mitarbeiterSelect.innerHTML = selectedId
+          ? ""
+          : '<option value="">Bitte wählen...</option>';
+
+        if (selectedId && selectedName) {
+          const option = document.createElement("option");
+          option.value = selectedId;
+          option.textContent = selectedName;
+          option.selected = true;
+          mitarbeiterSelect.appendChild(option);
+        }
+
+        data.forEach((mitarbeiter) => {
+          if (!selectedId || mitarbeiter.id != selectedId) {
             const option = document.createElement("option");
             option.value = mitarbeiter.id;
             option.textContent = mitarbeiter.name;
             mitarbeiterSelect.appendChild(option);
-          });
+          }
         });
-    });
+      });
   }
 
   document.body.addEventListener("click", function (e) {
     if (e.target.classList.contains("delete-abteilung-btn")) {
       if (e.target.dataset.confirming === "true") {
-        const abteilungId = e.target.getAttribute("data-id");
-        const headers = {
-          "Content-Type": "application/json",
-        };
-        if (csrfHeader && csrfToken) {
-          headers[csrfHeader] = csrfToken;
-        }
-
+        abteilungId = e.target.getAttribute("data-id");
         fetch("/verwaltung/abteilungen/remove/" + abteilungId, {
           method: "POST",
-          headers: headers,
+          headers: getHeaders(),
         })
-          .then(() => {
-            return fetch("/verwaltung/abteilungen/delete/" + abteilungId, {
+          .then(() =>
+            fetch("/verwaltung/abteilungen/delete/" + abteilungId, {
               method: "DELETE",
-              headers: headers,
-            });
-          })
+              headers: getHeaders(),
+            })
+          )
           .then((response) => {
             if (response.ok) {
               ladeTabelleNeu();
@@ -119,8 +140,13 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("abteilungen-tabelle-container").innerHTML =
           html;
       })
-      .catch((error) => {
-        console.error("Fehler beim Laden der Tabelle:", error);
-      });
+      .catch((error) => console.error("Fehler beim Laden der Tabelle:", error));
+  }
+
+  function getHeaders() {
+    const headers = { "Content-Type": "application/json" };
+    if (csrfHeader && csrfToken) headers[csrfHeader] = csrfToken;
+
+    return headers;
   }
 });
