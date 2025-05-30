@@ -13,7 +13,12 @@
       th:replace="~{common/header :: header('Mitarbeiter-Verwaltung')}"
     ></div>
 
-    <button sec:authorize="hasRole('ADMIN')" id="mitarbeiter-anlegen-btn" class="btn btn-primary" type="button">
+    <button
+      sec:authorize="hasRole('ADMIN')"
+      id="mitarbeiter-anlegen-btn"
+      class="btn btn-primary"
+      type="button"
+    >
       Mitarbeiter anlegen
     </button>
 
@@ -29,8 +34,7 @@
         ><br />
         <label> Nachname: <input type="text" name="nachname" required /> </label
         ><br />
-        <label> Passwort: <input type="text" name="passwort" required /> </label
-        ><br />
+        <label> Passwort: <input type="text" name="passwort" /> </label><br />
         <label>
           UrlaubstageProJahr:
           <input type="number" name="urlaubstageProJahr" min="1" required />

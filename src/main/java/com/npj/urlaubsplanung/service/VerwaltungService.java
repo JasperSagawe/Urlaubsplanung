@@ -56,21 +56,35 @@ public class VerwaltungService {
 	public void saveMitarbeiter(MitarbeiterDto mitarbeiterDto) {
 		UserRole userRole = userRoleRepository.findById(mitarbeiterDto.getRolle().getId()).orElse(null);
 
-		Mitarbeiter mitarbeiter = new Mitarbeiter(mitarbeiterDto.getVorname(), mitarbeiterDto.getNachname(),
-				mitarbeiterDto.getEmail(), userRole);
+		Mitarbeiter mitarbeiter;
+		Mitarbeiterdaten mitarbeiterdaten;
+		if (mitarbeiterDto.getId() > 0) {
+			mitarbeiter = mitarbeiterRepository.findById(mitarbeiterDto.getId())
+					.orElseThrow(() -> new EntityNotFoundException("Mitarbeiter nicht gefunden"));
+			mitarbeiter.setVorname(mitarbeiterDto.getVorname());
+			mitarbeiter.setNachname(mitarbeiterDto.getNachname());
+			mitarbeiter.setUserRole(userRole);
+			mitarbeiterdaten = mitarbeiter.getMitarbeiterdaten();
+			mitarbeiterdaten.setUrlaubstageProJahr(mitarbeiterDto.getUrlaubstageProJahr());
+		} else {
+			mitarbeiter = new Mitarbeiter(mitarbeiterDto.getVorname(), mitarbeiterDto.getNachname(),
+					mitarbeiterDto.getEmail(), userRole);
+
+			mitarbeiterdaten = new Mitarbeiterdaten(mitarbeiter, mitarbeiterDto.getUrlaubstageProJahr(),
+					mitarbeiterDto.getVerfuegbareUrlaubstage(), LocalDate.now().getYear(), 0);
+		}
 
 		mitarbeiter.setEmail(mitarbeiterDto.getVorname() + "." + mitarbeiterDto.getNachname() + "@example.com");
 
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		mitarbeiter.setPasswortHash(passwordEncoder.encode(mitarbeiterDto.getPasswort()));
-
-		Mitarbeiterdaten daten = new Mitarbeiterdaten(mitarbeiter, mitarbeiterDto.getUrlaubstageProJahr(),
-				mitarbeiterDto.getVerfuegbareUrlaubstage(), LocalDate.now().getYear(), 0);
+		if (mitarbeiterDto.getPasswort() != null) {
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			mitarbeiter.setPasswortHash(passwordEncoder.encode(mitarbeiterDto.getPasswort()));
+		}
 
 		Abteilung abteilung = abteilungRepository.findById(mitarbeiterDto.getAbteilung().getId()).orElse(null);
-		daten.setAbteilung(abteilung);
+		mitarbeiterdaten.setAbteilung(abteilung);
 
-		mitarbeiter.setMitarbeiterdaten(daten);
+		mitarbeiter.setMitarbeiterdaten(mitarbeiterdaten);
 
 		this.mitarbeiterRepository.save(mitarbeiter);
 	}
