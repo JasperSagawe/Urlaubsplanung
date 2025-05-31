@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.npj.urlaubsplanung.dto.UrlaubstagDto;
-import com.npj.urlaubsplanung.model.Team;
+import com.npj.urlaubsplanung.model.Abteilung;
 import com.npj.urlaubsplanung.security.LoginDetails;
 import com.npj.urlaubsplanung.service.UrlaubstagService;
 
@@ -24,32 +24,33 @@ public class AntraegeController {
 
 	@GetMapping
 	String kalender(@AuthenticationPrincipal LoginDetails userDetails, Model model) {
-		Team team = userDetails.getMitarbeiter().getMitarbeiterdaten().getTeam();
-		List<UrlaubstagDto> urlaubstage = urlaubstagService.getUrlaubstageByTeam(team.getId());
+		Abteilung abteilung = userDetails.getMitarbeiter().getMitarbeiterdaten().getAbteilung();
+		List<UrlaubstagDto> urlaubstage = urlaubstagService.getUrlaubstageByAbteilung(abteilung.getId());
 
-		model.addAttribute("teamname", team.getName());
+		model.addAttribute("abteilungsname", abteilung.getName());
 		model.addAttribute("urlaubstage", urlaubstage);
 		return "antraege";
 	}
 
 	@GetMapping("/tabelle")
 	public String antraegeTabelleFragment(@AuthenticationPrincipal LoginDetails userDetails, Model model) {
-		Team team = userDetails.getMitarbeiter().getMitarbeiterdaten().getTeam();
-		List<UrlaubstagDto> urlaubstage = urlaubstagService.getUrlaubstageByTeam(team.getId());
-		model.addAttribute("teamname", team.getName());
+		Abteilung abteilung = userDetails.getMitarbeiter().getMitarbeiterdaten().getAbteilung();
+		List<UrlaubstagDto> urlaubstage = urlaubstagService.getUrlaubstageByAbteilung(abteilung.getId());
+
+		model.addAttribute("abteilungsname", abteilung.getName());
 		model.addAttribute("urlaubstage", urlaubstage);
 		return "common/antraege-tabelle :: antraegeTabelle";
 	}
 
-	@PostMapping("/genehmigen/{id}")
 	@ResponseBody
-	public void genehmigeUrlaub(@PathVariable Long id) {
-		urlaubstagService.genehmigeUrlaubstag(id);
+	@PostMapping("/genehmigen/{id}")
+	public void genehmigeUrlaub(@PathVariable int id) {
+		urlaubstagService.genehmigeUrlaubsantrag(id);
 	}
 
-	@PostMapping("/ablehnen/{id}")
 	@ResponseBody
-	public void lehneUrlaubAb(@PathVariable Long id) {
-		urlaubstagService.lehneUrlaubstagAb(id);
+	@PostMapping("/ablehnen/{id}")
+	public void lehneUrlaubAb(@PathVariable int id) {
+		urlaubstagService.lehneUrlaubsantragAb(id);
 	}
 }

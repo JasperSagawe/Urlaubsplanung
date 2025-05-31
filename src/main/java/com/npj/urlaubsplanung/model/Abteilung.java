@@ -12,7 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class Team {
+public class Abteilung {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,17 +22,17 @@ public class Team {
 
 	private Integer maxUrlaubProzent;
 
-	@OneToMany(mappedBy = "team")
+	@OneToMany(mappedBy = "abteilung")
 	private List<Mitarbeiterdaten> mitarbeiterDatenListe = new ArrayList<>();
 
 	@OneToOne
-	@JoinColumn(name = "teamleiter_id")
-	private Mitarbeiter teamleiter;
+	@JoinColumn(name = "abteilungsleiter_id")
+	private Mitarbeiter abteilungsleiter;
 
-	public Team() {
+	public Abteilung() {
 	}
 
-	public Team(String name, Integer maxUrlaubProzent) {
+	public Abteilung(String name, Integer maxUrlaubProzent) {
 		this.name = name;
 		this.maxUrlaubProzent = maxUrlaubProzent;
 	}
@@ -69,12 +69,12 @@ public class Team {
 		this.mitarbeiterDatenListe = mitarbeiterDatenListe;
 	}
 
-	public Mitarbeiter getTeamleiter() {
-		return teamleiter;
+	public Mitarbeiter getAbteilungsleiter() {
+		return abteilungsleiter;
 	}
 
-	public void setTeamleiter(Mitarbeiter teamleiter) {
-		this.teamleiter = teamleiter;
+	public void setAbteilungsleiter(Mitarbeiter abteilungsleiter) {
+		this.abteilungsleiter = abteilungsleiter;
 	}
 
 }

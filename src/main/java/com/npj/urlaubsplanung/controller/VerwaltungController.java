@@ -25,14 +25,10 @@ class VerwaltungController {
 		this.verwaltungService = verwaltungService;
 	}
 
-	@GetMapping()
-	String verwaltung() {
-		return "verwaltung";
-	}
-
 	@GetMapping("/mitarbeiter")
 	public String mitarbeiter(Model model) {
 		Iterable<MitarbeiterDto> mitarbeiter = verwaltungService.getMitarbeiter();
+
 		model.addAttribute("mitarbeiter", mitarbeiter);
 		return "mitarbeiter";
 	}
@@ -40,6 +36,7 @@ class VerwaltungController {
 	@GetMapping("/mitarbeiter-tabelle")
 	public String mitarbeiterTabelleFragment(Model model) {
 		Iterable<MitarbeiterDto> mitarbeiter = verwaltungService.getMitarbeiter();
+
 		model.addAttribute("mitarbeiter", mitarbeiter);
 		return "common/mitarbeiter-tabelle :: mitarbeiterTabelle";
 	}
@@ -47,21 +44,22 @@ class VerwaltungController {
 	@ResponseBody
 	@PostMapping("/mitarbeiter/save")
 	public ResponseEntity<Void> saveMitarbeiter(@RequestBody MitarbeiterDto mitarbeiterDto) {
-		System.out.println(
-				"MitarbeiterDto empfangen: " + mitarbeiterDto.getTeam().getName() + mitarbeiterDto.getTeam().getId());
 		verwaltungService.saveMitarbeiter(mitarbeiterDto);
+
 		return ResponseEntity.ok().build();
 	}
 
 	@DeleteMapping("/mitarbeiter/delete/{id}")
 	public ResponseEntity<Void> deleteMitarbeiter(@PathVariable int id) {
 		verwaltungService.deleteMitarbeiterById(id);
+
 		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/abteilungen")
 	public String abteilungen(Model model) {
 		Iterable<AbteilungDto> abteilungen = verwaltungService.getAbteilungen();
+
 		model.addAttribute("abteilungen", abteilungen);
 		return "abteilungen";
 	}
@@ -69,6 +67,7 @@ class VerwaltungController {
 	@GetMapping("/abteilungen-tabelle")
 	public String abteilungenTabelleFragment(Model model) {
 		Iterable<AbteilungDto> abteilungen = verwaltungService.getAbteilungen();
+
 		model.addAttribute("abteilungen", abteilungen);
 		return "common/abteilungen-tabelle :: abteilungenTabelle";
 	}
@@ -77,32 +76,37 @@ class VerwaltungController {
 	@PostMapping("/abteilungen/save")
 	public ResponseEntity<Void> saveAbteilung(@RequestBody AbteilungDto abteilungDto) {
 		verwaltungService.saveAbteilung(abteilungDto);
+
 		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/abteilungen/remove/{id}")
 	public ResponseEntity<Void> removeAbteilungMitarbeiterById(@PathVariable int id) {
 		verwaltungService.removeAbteilungMitarbeiterById(id);
+
 		return ResponseEntity.ok().build();
 	}
 
 	@DeleteMapping("/abteilungen/delete/{id}")
 	public ResponseEntity<Void> deleteAbteilung(@PathVariable int id) {
 		verwaltungService.deleteAbteilungById(id);
+
 		return ResponseEntity.ok().build();
 	}
 
 	@ResponseBody
-	@GetMapping("/team-select")
-	public ResponseEntity<Iterable<SelectDto>> getTeamSelect() {
-		Iterable<SelectDto> teams = verwaltungService.getTeamSelect();
-		return ResponseEntity.ok(teams);
+	@GetMapping("/abteilung-select")
+	public ResponseEntity<Iterable<SelectDto>> getAbteilungSelect() {
+		Iterable<SelectDto> abteilungen = verwaltungService.getAbteilungSelect();
+
+		return ResponseEntity.ok(abteilungen);
 	}
 
 	@ResponseBody
 	@GetMapping("/rolle-select")
 	public ResponseEntity<Iterable<SelectDto>> getRolleSelect() {
 		Iterable<SelectDto> rollen = verwaltungService.getRolleSelect();
+
 		return ResponseEntity.ok(rollen);
 	}
 
@@ -110,6 +114,7 @@ class VerwaltungController {
 	@GetMapping("/mitarbeiter-select")
 	public ResponseEntity<Iterable<SelectDto>> getMitarbeiterSelect() {
 		Iterable<SelectDto> mitarbeiter = verwaltungService.getMitarbeiterSelect();
+
 		return ResponseEntity.ok(mitarbeiter);
 	}
 }

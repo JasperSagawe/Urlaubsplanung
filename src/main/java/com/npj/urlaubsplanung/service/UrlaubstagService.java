@@ -1,13 +1,10 @@
 package com.npj.urlaubsplanung.service;
 
-import static de.focus_shift.jollyday.core.HolidayCalendar.GERMANY;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,19 +13,21 @@ import org.springframework.stereotype.Service;
 import com.npj.urlaubsplanung.dto.StatusDto;
 import com.npj.urlaubsplanung.dto.UrlaubsdatenDto;
 import com.npj.urlaubsplanung.dto.UrlaubstagDto;
+import com.npj.urlaubsplanung.exception.AbteilungUrlaubsgrenzeErreichtException;
 import com.npj.urlaubsplanung.exception.MaximaleUrlaubstageUeberschrittenException;
-import com.npj.urlaubsplanung.exception.TeamUrlaubsgrenzeErreichtException;
+import com.npj.urlaubsplanung.model.Abteilung;
 import com.npj.urlaubsplanung.model.Mitarbeiter;
 import com.npj.urlaubsplanung.model.Mitarbeiterdaten;
-import com.npj.urlaubsplanung.model.Team;
 import com.npj.urlaubsplanung.model.Urlaubsantrag;
 import com.npj.urlaubsplanung.repository.MitarbeiterRepository;
 import com.npj.urlaubsplanung.repository.MitarbeiterdatenRepository;
 import com.npj.urlaubsplanung.repository.UrlaubsantragRepository;
 
+import static de.focus_shift.jollyday.core.HolidayCalendar.GERMANY;
 import de.focus_shift.jollyday.core.Holiday;
 import de.focus_shift.jollyday.core.HolidayManager;
 import de.focus_shift.jollyday.core.ManagerParameters;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class UrlaubstagService {
@@ -44,35 +43,16 @@ public class UrlaubstagService {
 		this.urlaubsantragRepository = urlaubsantragRepository;
 	}
 
-	public void deleteUrlaubstagById(Integer id) {
-		Optional<Urlaubsantrag> urlaubsantragOpt = urlaubsantragRepository.findById(id);
-		if (urlaubsantragOpt.isPresent()) {
-			Urlaubsantrag urlaubsantrag = urlaubsantragOpt.get();
-			int status = urlaubsantrag.getStatus();
-			// Nur wenn Status BEANTRAGT (0) oder GENEHMIGT (1)
-			if (status == 0 || status == 1) {
-				Mitarbeiter mitarbeiter = urlaubsantrag.getMitarbeiter();
-				Mitarbeiterdaten mitarbeiterdaten = mitarbeiterdatenRepository.findByMitarbeiter(mitarbeiter);
-				if (mitarbeiterdaten != null) {
-					long tage = berechneTage(urlaubsantrag.getStartDatum(), urlaubsantrag.getEndDatum());
-					mitarbeiterdaten
-							.setVerfuegbareUrlaubstage(mitarbeiterdaten.getVerfuegbareUrlaubstage() + (int) tage);
-					mitarbeiterdatenRepository.save(mitarbeiterdaten);
-				}
-			}
-			urlaubsantragRepository.deleteById(id);
-		}
-	}
-
 	public List<UrlaubstagDto> getUrlaubstage() {
 		return mapUrlaubsantraegeToDto(this.urlaubsantragRepository.findAll());
 	}
 
-	public List<UrlaubstagDto> getUrlaubstageByTeam(int id) {
+	public List<UrlaubstagDto> getUrlaubstageByAbteilung(int id) {
 		return mapUrlaubsantraegeToDto(this.urlaubsantragRepository.findAll().stream().filter(antrag -> {
 			Mitarbeiter mitarbeiter = antrag.getMitarbeiter();
-			Team team = mitarbeiter.getMitarbeiterdaten().getTeam();
-			return team != null && team.getId() == id;
+			Abteilung abteilung = mitarbeiter.getMitarbeiterdaten().getAbteilung();
+
+			return abteilung != null && abteilung.getId() == id;
 		}).toList());
 	}
 
@@ -80,6 +60,8 @@ public class UrlaubstagService {
 		LocalDate heute = LocalDate.now();
 		return urlaubsantraege.stream().map(antrag -> {
 			StatusDto status;
+
+			// 1 = Status Genehmigt
 			if (antrag.getStatus() == 1 && antrag.getStartDatum().isBefore(heute)) {
 				status = StatusDto.GENOMMEN;
 			} else {
@@ -91,96 +73,105 @@ public class UrlaubstagService {
 				};
 			}
 			Mitarbeiter m = antrag.getMitarbeiter();
-			String mitarbeiterName = "Urlaub - " + m.getVorname() + " " + m.getNachname();
+			String mitarbeiterName = m.getVorname() + " " + m.getNachname();
+
 			return new UrlaubstagDto(antrag.getId(), mitarbeiterName, antrag.getStartDatum(), antrag.getEndDatum(),
 					status);
-		}).sorted(Comparator.comparing(UrlaubstagDto::getStartDate)).toList();
+		}).sorted(Comparator.comparing(UrlaubstagDto::getStartdatum)).toList();
 	}
 
 	public UrlaubstagDto saveUrlaubsantrag(String email, UrlaubstagDto urlaubstagDto) {
-		Optional<Mitarbeiter> mitarbeiterOpt = this.mitarbeiterRepository.findByEmail(email);
+		Mitarbeiter mitarbeiter = this.mitarbeiterRepository.findByEmail(email)
+				.orElseThrow(() -> new EntityNotFoundException("Mitarbeiter nicht gefunden"));
 
-		if (mitarbeiterOpt.isPresent()) {
-			Mitarbeiter mitarbeiter = mitarbeiterOpt.get();
+		Mitarbeiterdaten mitarbeiterdaten = this.mitarbeiterdatenRepository.findByMitarbeiter(mitarbeiter);
 
-			long tage = berechneTage(urlaubstagDto.getStartDate(), urlaubstagDto.getEndDate());
+		int tage = berechneTage(urlaubstagDto.getStartdatum(), urlaubstagDto.getEnddatum());
+		int verfuegbareUrlaubstage = mitarbeiterdaten.getVerfuegbareUrlaubstage();
 
-			Mitarbeiterdaten mitarbeiterdaten = this.mitarbeiterdatenRepository.findByMitarbeiter(mitarbeiter);
-			if (mitarbeiterdaten == null) {
-				return null;
-			}
-
-			int verfuegbareUrlaubstage = mitarbeiterdaten.getVerfuegbareUrlaubstage();
-			if (tage > verfuegbareUrlaubstage) {
-				throw new MaximaleUrlaubstageUeberschrittenException(verfuegbareUrlaubstage);
-			}
-
-			Urlaubsantrag urlaubsantrag = new Urlaubsantrag(mitarbeiter, urlaubstagDto.getStartDate(),
-					urlaubstagDto.getEndDate(), 0, null);
-
-			Team team = mitarbeiter.getMitarbeiterdaten().getTeam();
-			int maxTeamUrlauber = team.getMaxUrlaubProzent();
-
-			List<LocalDate> urlaubstage = urlaubstagDto.getStartDate()
-					.datesUntil(urlaubstagDto.getEndDate().plusDays(1)).toList();
-
-			int teamMitglieder = mitarbeiterdatenRepository.countByTeamId(team.getId());
-			int maxUrlauber = (int) Math.ceil(teamMitglieder * (maxTeamUrlauber / 100.0));
-
-			for (LocalDate tag : urlaubstage) {
-				long bereitsImUrlaub = urlaubsantragRepository.findAll().stream().filter(a -> {
-					Mitarbeiter m = a.getMitarbeiter();
-					Team t = m.getMitarbeiterdaten().getTeam();
-					return t != null && t.getId() == team.getId() && !a.getStartDatum().isAfter(tag)
-							&& !a.getEndDatum().isBefore(tag) && (a.getStatus() == 0 || a.getStatus() == 1);
-				}).count();
-				if (bereitsImUrlaub >= maxUrlauber) {
-					throw new TeamUrlaubsgrenzeErreichtException();
-				}
-			}			
-			
-			int resturlaubVorjahr = mitarbeiterdaten.getResturlaubVorjahr();
-			if (resturlaubVorjahr > 0) {
-				if (resturlaubVorjahr >= (int) tage) {
-					mitarbeiterdaten.setResturlaubVorjahr(resturlaubVorjahr - (int) tage);
-				} else {
-					mitarbeiterdaten.setResturlaubVorjahr(0);
-				}
-			}
-
-			mitarbeiterdaten.setVerfuegbareUrlaubstage(verfuegbareUrlaubstage - (int) tage);
-			this.mitarbeiterdatenRepository.save(mitarbeiterdaten);
-			this.urlaubsantragRepository.save(urlaubsantrag);
-
-			String mitarbeiterName = "Urlaub - " + mitarbeiter.getVorname() + " " + mitarbeiter.getNachname();
-
-			return new UrlaubstagDto(urlaubstagDto.getId(), mitarbeiterName, urlaubstagDto.getStartDate(),
-					urlaubstagDto.getEndDate(), StatusDto.BEANTRAGT);
+		if (tage > verfuegbareUrlaubstage) {
+			throw new MaximaleUrlaubstageUeberschrittenException(verfuegbareUrlaubstage);
 		}
 
-		return null;
+		// 0 = Status Beantragt
+		Urlaubsantrag urlaubsantrag = new Urlaubsantrag(mitarbeiter, urlaubstagDto.getStartdatum(),
+				urlaubstagDto.getEnddatum(), 0);
+
+		Abteilung abteilung = mitarbeiter.getMitarbeiterdaten().getAbteilung();
+		List<LocalDate> urlaubstage = urlaubstagDto.getStartdatum().datesUntil(urlaubstagDto.getEnddatum().plusDays(1))
+				.toList();
+		int abteilungMitglieder = mitarbeiterdatenRepository.countByAbteilungId(abteilung.getId());
+		int abteilungMaxUrlaubProzent = abteilung.getMaxUrlaubProzent();
+		double maxUrlauber = abteilungMitglieder * (abteilungMaxUrlaubProzent / 100.0);
+
+		for (LocalDate tag : urlaubstage) {
+			long bereitsImUrlaub = urlaubsantragRepository.findAll().stream().filter(antrag -> {
+				Mitarbeiter m = antrag.getMitarbeiter();
+				Abteilung a = m.getMitarbeiterdaten().getAbteilung();
+				return a != null && a.getId() == abteilung.getId() && !antrag.getStartDatum().isAfter(tag)
+						&& !antrag.getEndDatum().isBefore(tag) && (antrag.getStatus() == 0 || antrag.getStatus() == 1);
+			}).count();
+
+			if (bereitsImUrlaub >= maxUrlauber) {
+				throw new AbteilungUrlaubsgrenzeErreichtException();
+			}
+		}
+
+		int resturlaubVorjahr = mitarbeiterdaten.getResturlaubVorjahr();
+		if (resturlaubVorjahr > 0) {
+			if (resturlaubVorjahr >= tage) {
+				mitarbeiterdaten.setResturlaubVorjahr(resturlaubVorjahr - tage);
+			} else {
+				mitarbeiterdaten.setResturlaubVorjahr(0);
+			}
+		}
+
+		mitarbeiterdaten.setVerfuegbareUrlaubstage(verfuegbareUrlaubstage - tage);
+		this.mitarbeiterdatenRepository.save(mitarbeiterdaten);
+		this.urlaubsantragRepository.save(urlaubsantrag);
+
+		String mitarbeiterName = mitarbeiter.getVorname() + " " + mitarbeiter.getNachname();
+
+		return new UrlaubstagDto(urlaubstagDto.getId(), mitarbeiterName, urlaubstagDto.getStartdatum(),
+				urlaubstagDto.getEnddatum(), StatusDto.BEANTRAGT);
+	}
+
+	public void deleteUrlaubsantragById(Integer id) {
+		Urlaubsantrag urlaubsantrag = urlaubsantragRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Urlaubsantrag nicht gefunden"));
+		int status = urlaubsantrag.getStatus();
+
+		// Nur wenn Status BEANTRAGT (0) oder GENEHMIGT (1)
+		if (status == 0 || status == 1) {
+			Mitarbeiter mitarbeiter = urlaubsantrag.getMitarbeiter();
+			Mitarbeiterdaten mitarbeiterdaten = mitarbeiterdatenRepository.findByMitarbeiter(mitarbeiter);
+
+			int tage = berechneTage(urlaubsantrag.getStartDatum(), urlaubsantrag.getEndDatum());
+			mitarbeiterdaten.setVerfuegbareUrlaubstage(mitarbeiterdaten.getVerfuegbareUrlaubstage() + tage);
+			mitarbeiterdatenRepository.save(mitarbeiterdaten);
+		}
+
+		urlaubsantragRepository.deleteById(id);
 	}
 
 	public UrlaubsdatenDto getUrlaubsdaten(String email) {
-		Optional<Mitarbeiter> mitarbeiterOpt = mitarbeiterRepository.findByEmail(email);
-		if (mitarbeiterOpt.isEmpty())
-			return null;
-
-		Mitarbeiter mitarbeiter = mitarbeiterOpt.get();
+		Mitarbeiter mitarbeiter = mitarbeiterRepository.findByEmail(email)
+				.orElseThrow(() -> new EntityNotFoundException("Mitarbeiter nicht gefunden"));
 		Mitarbeiterdaten mitarbeiterdaten = aktualisiereMitarbeiterdaten(
 				mitarbeiterdatenRepository.findByMitarbeiter(mitarbeiter));
 		List<Urlaubsantrag> urlaubsantraege = urlaubsantragRepository.findByMitarbeiter(mitarbeiter);
 
+		LocalDate heute = LocalDate.now();
 		AtomicInteger beantragt = new AtomicInteger();
 		AtomicInteger genommen = new AtomicInteger();
-		LocalDate heute = LocalDate.now();
 
 		List<UrlaubstagDto> urlaubstage = urlaubsantraege.stream().map(antrag -> {
-			long tage = berechneTage(antrag.getStartDatum(), antrag.getEndDatum());
+			int tage = berechneTage(antrag.getStartDatum(), antrag.getEndDatum());
 			StatusDto status;
+
 			if (antrag.getStatus() == 1 && antrag.getStartDatum().isBefore(heute)) {
 				status = StatusDto.GENOMMEN;
-				genommen.addAndGet((int) tage);
+				genommen.addAndGet(tage);
 			} else {
 				status = switch (antrag.getStatus()) {
 				case 0 -> StatusDto.BEANTRAGT;
@@ -188,11 +179,16 @@ public class UrlaubstagService {
 				case 2 -> StatusDto.ABGELEHNT;
 				default -> StatusDto.BEANTRAGT;
 				};
+
 				if (antrag.getStatus() == 0 || antrag.getStatus() == 1)
-					beantragt.addAndGet((int) tage);
+					beantragt.addAndGet(tage);
 			}
-			return new UrlaubstagDto(antrag.getId(), "Urlaub", antrag.getStartDatum(), antrag.getEndDatum(), status);
-		}).sorted(Comparator.comparing(UrlaubstagDto::getStartDate)).toList();
+
+			String mitarbeiterName = mitarbeiter.getVorname() + " " + mitarbeiter.getNachname();
+
+			return new UrlaubstagDto(antrag.getId(), mitarbeiterName, antrag.getStartDatum(), antrag.getEndDatum(),
+					status);
+		}).sorted(Comparator.comparing(UrlaubstagDto::getStartdatum)).toList();
 
 		return new UrlaubsdatenDto(mitarbeiterdaten.getResturlaubVorjahr(),
 				mitarbeiterdaten.getVerfuegbareUrlaubstage(), beantragt.get(), genommen.get(), urlaubstage);
@@ -201,6 +197,7 @@ public class UrlaubstagService {
 	public Mitarbeiterdaten aktualisiereMitarbeiterdaten(Mitarbeiterdaten daten) {
 		int aktuellesJahr = LocalDate.now().getYear();
 		boolean aktualisiert = false;
+
 		while (daten.getAktuellesJahr() < aktuellesJahr) {
 			int rest = daten.getVerfuegbareUrlaubstage();
 			daten.setResturlaubVorjahr(rest);
@@ -216,35 +213,32 @@ public class UrlaubstagService {
 		return daten;
 	}
 
-	public void genehmigeUrlaubstag(Long id) {
-		Optional<Urlaubsantrag> urlaubsantragOpt = urlaubsantragRepository.findById(id.intValue());
-		if (urlaubsantragOpt.isPresent()) {
-			Urlaubsantrag urlaubsantrag = urlaubsantragOpt.get();
-			urlaubsantrag.setStatus(1);
-			urlaubsantragRepository.save(urlaubsantrag);
-		}
+	public void genehmigeUrlaubsantrag(int id) {
+		Urlaubsantrag urlaubsantrag = urlaubsantragRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Urlaubsantrag nicht gefunden"));
+		urlaubsantrag.setStatus(1);
+		urlaubsantragRepository.save(urlaubsantrag);
+
 	}
 
-	public void lehneUrlaubstagAb(Long id) {
-		Optional<Urlaubsantrag> urlaubsantragOpt = urlaubsantragRepository.findById(id.intValue());
-		if (urlaubsantragOpt.isPresent()) {
-			Urlaubsantrag urlaubsantrag = urlaubsantragOpt.get();
-			urlaubsantrag.setStatus(2);
-			urlaubsantragRepository.save(urlaubsantrag);
+	public void lehneUrlaubsantragAb(int id) {
+		Urlaubsantrag urlaubsantrag = urlaubsantragRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Urlaubsantrag nicht gefunden"));
+		Mitarbeiter mitarbeiter = urlaubsantrag.getMitarbeiter();
+		Mitarbeiterdaten mitarbeiterdaten = mitarbeiterdatenRepository.findByMitarbeiter(mitarbeiter);
 
-			Mitarbeiter mitarbeiter = urlaubsantrag.getMitarbeiter();
-			Mitarbeiterdaten mitarbeiterdaten = mitarbeiterdatenRepository.findByMitarbeiter(mitarbeiter);
-			if (mitarbeiterdaten != null) {
-				long tage = berechneTage(urlaubsantrag.getStartDatum(), urlaubsantrag.getEndDatum());
-				mitarbeiterdaten.setVerfuegbareUrlaubstage(mitarbeiterdaten.getVerfuegbareUrlaubstage() + (int) tage);
-				mitarbeiterdatenRepository.save(mitarbeiterdaten);
-			}
-		}
+		urlaubsantrag.setStatus(2);
+
+		int tage = berechneTage(urlaubsantrag.getStartDatum(), urlaubsantrag.getEndDatum());
+		mitarbeiterdaten.setVerfuegbareUrlaubstage(mitarbeiterdaten.getVerfuegbareUrlaubstage() + tage);
+
+		urlaubsantragRepository.save(urlaubsantrag);
+		mitarbeiterdatenRepository.save(mitarbeiterdaten);
 	}
 
-	public long berechneTage(LocalDate start, LocalDate end) {
+	public int berechneTage(LocalDate start, LocalDate end) {
 		Set<Holiday> feiertage = getFeiertage(start, end);
-		long tage = 0;
+		int tage = 0;
 		for (LocalDate date = start; !date.isAfter(end); date = date.plusDays(1)) {
 			LocalDate day = date;
 			DayOfWeek dayOfWeek = date.getDayOfWeek();

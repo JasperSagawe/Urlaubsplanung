@@ -6,21 +6,19 @@ public class MitarbeiterDto {
 	private String vorname;
 	private String nachname;
 	private String email;
-
-	// Nur zum Erstellen des Nutzers
 	private String passwort;
-	private SelectDto team;
+	private SelectDto abteilung;
 	private SelectDto rolle;
 	private int urlaubstageProJahr;
 	private int verfuegbareUrlaubstage;
 
-	public MitarbeiterDto(int id, String vorname, String nachname, String email, SelectDto team, SelectDto rolle,
+	public MitarbeiterDto(int id, String vorname, String nachname, String email, SelectDto abteilung, SelectDto rolle,
 			int urlaubstageProJahr, int verfuegbareUrlaubstage) {
 		this.id = id;
 		this.vorname = vorname;
 		this.nachname = nachname;
 		this.email = email;
-		this.team = team;
+		this.abteilung = abteilung;
 		this.rolle = rolle;
 		this.urlaubstageProJahr = urlaubstageProJahr;
 		this.verfuegbareUrlaubstage = verfuegbareUrlaubstage;
@@ -66,12 +64,12 @@ public class MitarbeiterDto {
 		this.passwort = passwort;
 	}
 
-	public SelectDto getTeam() {
-		return team;
+	public SelectDto getAbteilung() {
+		return abteilung;
 	}
 
-	public void setTeam(SelectDto team) {
-		this.team = team;
+	public void setAbteilung(SelectDto abteilung) {
+		this.abteilung = abteilung;
 	}
 
 	public SelectDto getRolle() {

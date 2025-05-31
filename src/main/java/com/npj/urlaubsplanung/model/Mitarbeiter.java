@@ -1,6 +1,5 @@
 package com.npj.urlaubsplanung.model;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,17 +31,12 @@ public class Mitarbeiter {
 	@OneToMany(mappedBy = "mitarbeiter", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Urlaubsantrag> urlaubsantrag = new ArrayList<>();
 
-	@OneToOne(mappedBy = "teamleiter")
-	private Team team;
+	@OneToOne(mappedBy = "abteilungsleiter")
+	private Abteilung abteilung;
 
 	@ManyToOne
 	@JoinColumn(name = "user_role_id")
 	private UserRole userRole;
-
-	private Boolean aktiv = true;
-	private Integer loginVersuche = 0;
-	private Boolean firstLogin = true;
-	private Timestamp lastLogin;
 
 	public Mitarbeiter() {
 	}
@@ -102,12 +96,20 @@ public class Mitarbeiter {
 		this.mitarbeiterdaten = mitarbeiterdaten;
 	}
 
-	public Team getTeam() {
-		return team;
+	public List<Urlaubsantrag> getUrlaubsantraege() {
+		return urlaubsantrag;
 	}
 
-	public void setTeam(Team team) {
-		this.team = team;
+	public void setUrlaubsantraege(List<Urlaubsantrag> urlaubsantrag) {
+		this.urlaubsantrag = urlaubsantrag;
+	}
+
+	public Abteilung getAbteilung() {
+		return abteilung;
+	}
+
+	public void setAbteilung(Abteilung abteilung) {
+		this.abteilung = abteilung;
 	}
 
 	public UserRole getUserRole() {
@@ -116,38 +118,6 @@ public class Mitarbeiter {
 
 	public void setUserRole(UserRole userRole) {
 		this.userRole = userRole;
-	}
-
-	public Boolean getAktiv() {
-		return aktiv;
-	}
-
-	public void setAktiv(Boolean aktiv) {
-		this.aktiv = aktiv;
-	}
-
-	public Integer getLoginVersuche() {
-		return loginVersuche;
-	}
-
-	public void setLoginVersuche(Integer loginVersuche) {
-		this.loginVersuche = loginVersuche;
-	}
-
-	public Boolean getFirstLogin() {
-		return firstLogin;
-	}
-
-	public void setFirstLogin(Boolean firstLogin) {
-		this.firstLogin = firstLogin;
-	}
-
-	public Timestamp getLastLogin() {
-		return lastLogin;
-	}
-
-	public void setLastLogin(Timestamp lastLogin) {
-		this.lastLogin = lastLogin;
 	}
 
 }

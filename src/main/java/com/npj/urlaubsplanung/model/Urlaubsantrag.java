@@ -16,18 +16,15 @@ public class Urlaubsantrag {
 	private LocalDate startDatum;
 	private LocalDate endDatum;
 	private Integer status;
-	private LocalDateTime antragsdatum;
 
 	public Urlaubsantrag() {
 	}
 
-	public Urlaubsantrag(Mitarbeiter mitarbeiter, LocalDate startDatum, LocalDate endDatum, Integer status,
-			LocalDateTime antragsdatum) {
+	public Urlaubsantrag(Mitarbeiter mitarbeiter, LocalDate startDatum, LocalDate endDatum, Integer status) {
 		this.mitarbeiter = mitarbeiter;
 		this.startDatum = startDatum;
 		this.endDatum = endDatum;
 		this.status = status;
-		this.antragsdatum = antragsdatum;
 	}
 
 	public Integer getId() {
@@ -68,14 +65,6 @@ public class Urlaubsantrag {
 
 	public void setStatus(Integer status) {
 		this.status = status;
-	}
-
-	public LocalDateTime getAntragsdatum() {
-		return antragsdatum;
-	}
-
-	public void setAntragsdatum(LocalDateTime antragsdatum) {
-		this.antragsdatum = antragsdatum;
 	}
 
 }

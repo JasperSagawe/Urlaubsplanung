@@ -5,32 +5,44 @@
       <table>
         <thead>
           <tr>
-            <th>ID</th>
             <th>Vorname</th>
             <th>Nachname</th>
             <th>Email</th>
-            <th>Team</th>
+            <th>Abteilung</th>
             <th>Rolle</th>
             <th>Urlaubstage pro Jahr</th>
             <th>Freie Urlaubstage</th>
-            <th>Löschen</th>
+            <th sec:authorize="hasRole('ADMIN')">Bearbeiten</th>
+            <th sec:authorize="hasRole('ADMIN')">Löschen</th>
           </tr>
         </thead>
         <tbody>
           <tr th:each="m : ${mitarbeiter}">
-            <td th:text="${m.id}"></td>
             <td th:text="${m.vorname}"></td>
             <td th:text="${m.nachname}"></td>
             <td th:text="${m.email}"></td>
-            <td th:text="${m.team} ? ${m.team.name} : 'Kein Team'"></td>
-            <td th:text="${m.rolle} ? ${m.rolle.name} : 'Kein Admin'"></td>
+            <td
+              th:text="${m.abteilung} ? ${m.abteilung.name} : 'Keine Abteilung'"
+            ></td>
+            <td th:text="${m.rolle} ? ${m.rolle.name} : 'User'"></td>
             <td th:text="${m.urlaubstageProJahr}"></td>
             <td th:text="${m.verfuegbareUrlaubstage}"></td>
-            <td>
+            <td sec:authorize="hasRole('ADMIN')">
               <button
-                class="btn btn-danger delete-mitarbeiter-btn"
+                class="btn bearbeite-mitarbeiter-btn"
                 th:data-id="${m.id}"
+                th:data-vorname="${m.vorname}"
+                th:data-nachname="${m.nachname}"
+                th:data-passwort="${m.passwort}"
+                th:data-urlaubstageProJahr="${m.urlaubstageProJahr}"
+                th:data-abteilung-id="${m.abteilung} ? ${m.abteilung.id} : ''"
+                th:data-rolle-id="${m.rolle} ? ${m.rolle.id} : ''"
               >
+                Bearbeiten
+              </button>
+            </td>
+            <td sec:authorize="hasRole('ADMIN')">
+              <button class="btn delete-mitarbeiter-btn" th:data-id="${m.id}">
                 Löschen
               </button>
             </td>

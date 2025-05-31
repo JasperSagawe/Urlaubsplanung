@@ -21,10 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import de.focus_shift.jollyday.core.Holiday;
 
+import com.npj.urlaubsplanung.dto.StatusDto;
 import com.npj.urlaubsplanung.dto.UrlaubsdatenDto;
 import com.npj.urlaubsplanung.dto.UrlaubstagDto;
 import com.npj.urlaubsplanung.exception.MaximaleUrlaubstageUeberschrittenException;
-import com.npj.urlaubsplanung.exception.TeamUrlaubsgrenzeErreichtException;
+import com.npj.urlaubsplanung.exception.AbteilungUrlaubsgrenzeErreichtException;
 import com.npj.urlaubsplanung.service.UrlaubstagService;
 import com.npj.urlaubsplanung.security.LoginDetails;
 
@@ -39,8 +40,9 @@ class KalenderController {
 	}
 
 	@GetMapping
-	String kalender(@AuthenticationPrincipal LoginDetails userDetails, Model model) {
+	public String kalender(@AuthenticationPrincipal LoginDetails userDetails, Model model) {
 		UrlaubsdatenDto urlaubstage = urlaubstagService.getUrlaubsdaten(userDetails.getUsername());
+
 		model.addAttribute("user", urlaubstage);
 		model.addAttribute("urlaubstage", urlaubstage.getUrlaubstage());
 		return "kalender";
@@ -49,6 +51,7 @@ class KalenderController {
 	@GetMapping("/urlaub-tabelle")
 	public String urlaubTabelleFragment(@AuthenticationPrincipal LoginDetails userDetails, Model model) {
 		UrlaubsdatenDto urlaubstage = urlaubstagService.getUrlaubsdaten(userDetails.getUsername());
+
 		model.addAttribute("user", urlaubstage);
 		model.addAttribute("urlaubstage", urlaubstage.getUrlaubstage());
 		return "common/kalender-tabellen :: kalenderTabellen";
@@ -58,27 +61,27 @@ class KalenderController {
 	@GetMapping("/urlaubstage")
 	public List<Map<String, Object>> getUrlaubstage(@AuthenticationPrincipal LoginDetails userDetails) {
 		List<Map<String, Object>> events;
-		Integer teamId = userDetails.getMitarbeiter().getMitarbeiterdaten().getTeam().getId();
+		Integer abteilungId = userDetails.getMitarbeiter().getMitarbeiterdaten().getAbteilung().getId();
+		List<UrlaubstagDto> urlaubstage = (abteilungId != null)
+				? urlaubstagService.getUrlaubstageByAbteilung(abteilungId)
+				: urlaubstagService.getUrlaubstage();
 
-		List<UrlaubstagDto> urlaubstage = (teamId != null)
-			? urlaubstagService.getUrlaubstageByTeam(teamId)
-			: urlaubstagService.getUrlaubstage();
-
-		events = urlaubstage.stream().map(u -> {
+		events = urlaubstage.stream().filter(u -> !StatusDto.ABGELEHNT.equals(u.getStatus())).map(u -> {
 			Map<String, Object> event = new HashMap<>();
 			event.put("title", u.getEventName());
-			event.put("start", u.getStartDate().toString());
-			event.put("end", u.getEndDate().plusDays(1).toString());
+			event.put("start", u.getStartdatum().toString());
+			event.put("end", u.getEnddatum().plusDays(1).toString());
+			event.put("color", StatusDto.BEANTRAGT.equals(u.getStatus()) ? "cyan" : "blue");
 			return event;
 		}).collect(Collectors.toList());
 
-		int currentYear = java.time.LocalDate.now().getYear();
-		Set<Holiday> feiertage = urlaubstagService.getFeiertage(currentYear);
-		for (Holiday holiday : feiertage) {
+		int jahr = java.time.LocalDate.now().getYear();
+		Set<Holiday> feiertage = urlaubstagService.getFeiertage(jahr);
+		for (Holiday feiertag : feiertage) {
 			Map<String, Object> event = new HashMap<>();
-			event.put("title", holiday.getDescription());
-			event.put("start", holiday.getDate().toString());
-			event.put("end", holiday.getDate().plusDays(1).toString());
+			event.put("title", feiertag.getDescription());
+			event.put("start", feiertag.getDate().toString());
+			event.put("end", feiertag.getDate().plusDays(1).toString());
 			event.put("color", "red");
 			events.add(event);
 		}
@@ -87,7 +90,8 @@ class KalenderController {
 
 	@DeleteMapping("/urlaubstage/delete/{id}")
 	public ResponseEntity<Void> deleteUrlaubstag(@PathVariable Integer id) {
-		urlaubstagService.deleteUrlaubstagById(id);
+		urlaubstagService.deleteUrlaubsantragById(id);
+
 		return ResponseEntity.ok().build();
 	}
 
@@ -103,8 +107,8 @@ class KalenderController {
 			String message = "DU_KANNST_MAXIMAL_" + ex.getVerbleibendeTage() + "_BEANTRAGEN";
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 
-		} catch (TeamUrlaubsgrenzeErreichtException ex) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body("ZU_VIELE_TEAMMITGLIEDER_IM_URLAUB");
+		} catch (AbteilungUrlaubsgrenzeErreichtException ex) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("ZU_VIELE_ABTEILUNGSMITGLIEDER_IM_URLAUB");
 
 		} catch (Exception ex) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
