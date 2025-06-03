@@ -94,6 +94,15 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.loginForm .message-placeholder {
+  max-width: 250px;
+  min-height: 2.6em;
+  margin-bottom: 10px;
+  color: red;
+  font-size: 0.9em;
+  word-wrap: break-word;
+}
+
 .loginForm input {
   width: 250px;
   padding: 10px;
@@ -147,12 +156,45 @@ body {
   border-radius: 8px;
 }
 
+.kalenderForm input[type="number"] {
+  width: 150px;
+  height: 15px;
+  padding: 6px;
+  margin: 10px 0;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+.kalenderForm select {
+  width: 150px;
+  height: 30px;
+  padding: 6px;
+  margin: 10px 0;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
 .button {
   background-color: #388087;
   color: white;
   width: 100px;
-  /* padding-top: 5px; */
-  /* padding-bottom: 5px; */
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color o.3s;
+}
+
+.dialogButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.ablehnenbutton {
+  background-color: red;
+  color: white;
+  width: 100px;
   border: none;
   border-radius: 8px;
   font-size: 16px;
@@ -169,4 +211,67 @@ body {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+
+/* Layout für den Kalender */
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.kalender-container {
+  flex: 2;
+  min-width: 300px;
+  height: 80vh;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.tabellen-container {
+  flex: 1;
+  min-width: 280px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-left: 1px solid #ccc;
+}
+
+/* Tabellen */
+.tabellen-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  background-color: white;
+}
+
+.tabellen-container th,
+.tabellen-container td {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.tabellen-container th {
+  background-color: #6fb3b8;
+  font-weight: bold;
+}
+
+.delete-urlaub-btn {
+  background-color: #c62828;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.delete-urlaub-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }

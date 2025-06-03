@@ -41,7 +41,7 @@
             <td th:text="${urlaubstag.status.getDisplayName()}"></td>
             <td>
               <button
-                class="btn delete-urlaub-btn"
+                class="delete-urlaub-btn"
                 th:data-id="${urlaubstag.id}"
                 th:disabled="${urlaubstag.status.name() == 'GENOMMEN'}"
               >

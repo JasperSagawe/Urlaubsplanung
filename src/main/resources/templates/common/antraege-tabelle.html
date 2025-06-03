@@ -25,7 +25,7 @@
             <td th:text="${urlaubstag.status.getDisplayName()}"></td>
             <td sec:authorize="!hasRole('USER')">
               <button
-                class="btn genehmigen-urlaub-btn"
+                class="button genehmigen-urlaub-btn"
                 th:data-id="${urlaubstag.id}"
                 th:disabled="${urlaubstag.status.name() != 'BEANTRAGT'}"
               >
@@ -34,7 +34,7 @@
             </td>
             <td sec:authorize="!hasRole('USER')">
               <button
-                class="btn ablehnen-urlaub-btn"
+                class="ablehnenbutton ablehnen-urlaub-btn"
                 th:data-id="${urlaubstag.id}"
                 th:disabled="${urlaubstag.status.name() != 'BEANTRAGT'}"
               >

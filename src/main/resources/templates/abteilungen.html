@@ -11,17 +11,24 @@
   <body>
     <div th:replace="~{common/header :: header('Abteilungen')}"></div>
 
-    <button sec:authorize="hasRole('ADMIN')" id="abteilung-anlegen-btn" class="btn btn-primary" type="button">
+    <button
+      sec:authorize="hasRole('ADMIN')"
+      id="abteilung-anlegen-btn"
+      class="button btn-primary"
+      type="button"
+    >
       Abteilung anlegen
     </button>
 
-    <div id="abteilungen-tabelle-container">
-      <div
-        th:replace="~{common/abteilungen-tabelle :: abteilungenTabelle}"
-      ></div>
+    <div class="flex">
+      <div class="tabellen-container" id="abteilungen-tabelle-container">
+        <div
+          th:replace="~{common/abteilungen-tabelle :: abteilungenTabelle}"
+        ></div>
+      </div>
     </div>
 
-    <dialog id="abteilung-anlegen-dialog">
+    <dialog class="kalenderForm" id="abteilung-anlegen-dialog">
       <form method="dialog" id="abteilung-anlegen-form">
         <label> Name: <input type="text" name="name" required /> </label>
         <br />
@@ -36,8 +43,12 @@
           </select>
         </label>
         <br />
-        <button type="submit">Speichern</button>
-        <button type="button" id="anlegen-abbrechen-btn">Abbrechen</button>
+        <div class="dialogButtons">
+          <button class="button" type="submit">Speichern</button>
+          <button class="button" type="button" id="anlegen-abbrechen-btn">
+            Abbrechen
+          </button>
+        </div>
       </form>
     </dialog>
   </body>

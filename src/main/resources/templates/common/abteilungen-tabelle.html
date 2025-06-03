@@ -23,7 +23,7 @@
             <td th:text="${a.maxUrlaubProzent} + '%'"></td>
             <td sec:authorize="hasRole('ADMIN')">
               <button
-                class="btn bearbeite-abteilung-btn"
+                class="button bearbeite-abteilung-btn"
                 th:data-id="${a.id}"
                 th:data-name="${a.name}"
                 th:data-maxUrlaubProzent="${a.maxUrlaubProzent}"
@@ -34,7 +34,10 @@
               </button>
             </td>
             <td sec:authorize="hasRole('ADMIN')">
-              <button class="btn delete-abteilung-btn" th:data-id="${a.id}">
+              <button
+                class="ablehnenbutton delete-abteilung-btn"
+                th:data-id="${a.id}"
+              >
                 Löschen
               </button>
             </td>
