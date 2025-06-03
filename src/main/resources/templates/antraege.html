@@ -13,8 +13,10 @@
       th:replace="~{common/header :: header('Anträge - ' + ${abteilungsname})}"
     ></div>
 
-    <div id="antraege-tabelle-container">
-      <div th:replace="~{common/antraege-tabelle :: antraegeTabelle}"></div>
+    <div class="flex">
+      <div class="tabellen-container" id="antraege-tabelle-container">
+        <div th:replace="~{common/antraege-tabelle :: antraegeTabelle}"></div>
+      </div>
     </div>
   </body>
 </html>

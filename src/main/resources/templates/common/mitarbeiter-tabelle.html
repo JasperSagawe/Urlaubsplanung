@@ -29,7 +29,7 @@
             <td th:text="${m.verfuegbareUrlaubstage}"></td>
             <td sec:authorize="hasRole('ADMIN')">
               <button
-                class="btn bearbeite-mitarbeiter-btn"
+                class="button bearbeite-mitarbeiter-btn"
                 th:data-id="${m.id}"
                 th:data-vorname="${m.vorname}"
                 th:data-nachname="${m.nachname}"
@@ -42,7 +42,10 @@
               </button>
             </td>
             <td sec:authorize="hasRole('ADMIN')">
-              <button class="btn delete-mitarbeiter-btn" th:data-id="${m.id}">
+              <button
+                class="ablehnenbutton delete-mitarbeiter-btn"
+                th:data-id="${m.id}"
+              >
                 Löschen
               </button>
             </td>

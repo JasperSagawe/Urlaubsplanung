@@ -16,19 +16,21 @@
     <button
       sec:authorize="hasRole('ADMIN')"
       id="mitarbeiter-anlegen-btn"
-      class="btn btn-primary"
+      class="button btn-primary"
       type="button"
     >
       Mitarbeiter anlegen
     </button>
 
-    <div id="mitarbeiter-tabelle-container">
-      <div
-        th:replace="~{common/mitarbeiter-tabelle :: mitarbeiterTabelle}"
-      ></div>
+    <div class="flex">
+      <div class="tabellen-container" id="mitarbeiter-tabelle-container">
+        <div
+          th:replace="~{common/mitarbeiter-tabelle :: mitarbeiterTabelle}"
+        ></div>
+      </div>
     </div>
 
-    <dialog id="mitarbeiter-anlegen-dialog">
+    <dialog class="kalenderForm" id="mitarbeiter-anlegen-dialog">
       <form method="dialog" id="mitarbeiter-anlegen-form">
         <label> Vorname: <input type="text" name="vorname" required /> </label
         ><br />
@@ -36,7 +38,7 @@
         ><br />
         <label> Passwort: <input type="text" name="passwort" /> </label><br />
         <label>
-          UrlaubstageProJahr:
+          Urlaubstage pro Jahr:
           <input type="number" name="urlaubstageProJahr" min="1" required />
         </label>
         <br />
@@ -55,8 +57,12 @@
         </label>
         <br />
 
-        <button type="submit">Speichern</button>
-        <button type="button" id="anlegen-abbrechen-btn">Abbrechen</button>
+        <div class="dialogButtons">
+          <button class="button" type="submit">Speichern</button>
+          <button class="button" type="button" id="anlegen-abbrechen-btn">
+            Abbrechen
+          </button>
+        </div>
       </form>
     </dialog>
   </body>

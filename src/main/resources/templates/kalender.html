@@ -6,31 +6,17 @@
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <link rel="stylesheet" type="text/css" href="/styles.css" />
-    <style>
-      .flex {
-        display: flex;
-        width: 100vw;
-        align-items: flex-start;
-      }
 
-      .zwei-drittel {
-        flex: 2;
-        height: 45vw;
-      }
-
-      .ein-drittel {
-        flex: 1;
-      }
-    </style>
     <script src="/js/index.global.js"></script>
     <script src="/js/kalender.js"></script>
   </head>
   <body>
     <div th:replace="~{common/header :: header('Kalender')}"></div>
-    <div class="flex">
-      <div class="zwei-drittel" id="kalender"></div>
 
-      <div id="urlaub-tabellen-container" class="ein-drittel">
+    <div class="flex">
+      <div class="kalender-container" id="kalender"></div>
+
+      <div id="urlaub-tabellen-container" class="tabellen-container">
         <div th:replace="~{common/kalender-tabellen :: kalenderTabellen}"></div>
       </div>
     </div>
