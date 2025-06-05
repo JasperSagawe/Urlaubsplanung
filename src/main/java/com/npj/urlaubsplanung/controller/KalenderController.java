@@ -25,6 +25,7 @@ import com.npj.urlaubsplanung.dto.StatusDto;
 import com.npj.urlaubsplanung.dto.UrlaubsdatenDto;
 import com.npj.urlaubsplanung.dto.UrlaubstagDto;
 import com.npj.urlaubsplanung.exception.MaximaleUrlaubstageUeberschrittenException;
+import com.npj.urlaubsplanung.model.Abteilung;
 import com.npj.urlaubsplanung.exception.AbteilungUrlaubsgrenzeErreichtException;
 import com.npj.urlaubsplanung.service.UrlaubstagService;
 import com.npj.urlaubsplanung.security.LoginDetails;
@@ -61,9 +62,9 @@ class KalenderController {
 	@GetMapping("/urlaubstage")
 	public List<Map<String, Object>> getUrlaubstage(@AuthenticationPrincipal LoginDetails userDetails) {
 		List<Map<String, Object>> events;
-		Integer abteilungId = userDetails.getMitarbeiter().getMitarbeiterdaten().getAbteilung().getId();
-		List<UrlaubstagDto> urlaubstage = (abteilungId != null)
-				? urlaubstagService.getUrlaubstageByAbteilung(abteilungId)
+		Abteilung abteilung = userDetails.getMitarbeiter().getMitarbeiterdaten().getAbteilung();
+		List<UrlaubstagDto> urlaubstage = (abteilung != null)
+				? urlaubstagService.getUrlaubstageByAbteilung(abteilung.getId())
 				: urlaubstagService.getUrlaubstage();
 
 		events = urlaubstage.stream().filter(u -> !StatusDto.ABGELEHNT.equals(u.getStatus())).map(u -> {

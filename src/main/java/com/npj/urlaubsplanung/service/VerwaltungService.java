@@ -76,7 +76,7 @@ public class VerwaltungService {
 
 		mitarbeiter.setEmail(mitarbeiterDto.getVorname() + "." + mitarbeiterDto.getNachname() + "@example.com");
 
-		if (mitarbeiterDto.getPasswort() != null) {
+		if (mitarbeiterDto.getPasswort() != "") {
 			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 			mitarbeiter.setPasswortHash(passwordEncoder.encode(mitarbeiterDto.getPasswort()));
 		}

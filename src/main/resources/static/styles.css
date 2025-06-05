@@ -139,7 +139,7 @@ body {
 }
 
 .kalenderForm input[type="date"] {
-  width: 100px;
+  width: 125px;
   height: 15px;
   padding: 6px;
   margin: 10px 0;
@@ -185,6 +185,15 @@ body {
   transition: background-color o.3s;
 }
 
+.button:hover {
+  background-color: #2a6a6f;
+}
+
+.button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 .dialogButtons {
   display: flex;
   justify-content: flex-end;
@@ -202,8 +211,9 @@ body {
   transition: background-color o.3s;
 }
 
-.button:hover {
-  background-color: #2a6a6f;
+.ablehnenbutton:disabled {
+   background-color: #ccc;
+   cursor: not-allowed;
 }
 
 .dialogButtons {

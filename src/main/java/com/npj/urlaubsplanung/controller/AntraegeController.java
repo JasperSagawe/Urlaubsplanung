@@ -25,9 +25,11 @@ public class AntraegeController {
 	@GetMapping
 	String kalender(@AuthenticationPrincipal LoginDetails userDetails, Model model) {
 		Abteilung abteilung = userDetails.getMitarbeiter().getMitarbeiterdaten().getAbteilung();
-		List<UrlaubstagDto> urlaubstage = urlaubstagService.getUrlaubstageByAbteilung(abteilung.getId());
+		List<UrlaubstagDto> urlaubstage = (abteilung != null)
+				? urlaubstagService.getUrlaubstageByAbteilung(abteilung.getId())
+				: urlaubstagService.getUrlaubstage();
 
-		model.addAttribute("abteilungsname", abteilung.getName());
+		model.addAttribute("abteilungsname", abteilung != null ? abteilung.getName() : "Alle Mitarbeiter");
 		model.addAttribute("urlaubstage", urlaubstage);
 		return "antraege";
 	}
@@ -35,9 +37,11 @@ public class AntraegeController {
 	@GetMapping("/tabelle")
 	public String antraegeTabelleFragment(@AuthenticationPrincipal LoginDetails userDetails, Model model) {
 		Abteilung abteilung = userDetails.getMitarbeiter().getMitarbeiterdaten().getAbteilung();
-		List<UrlaubstagDto> urlaubstage = urlaubstagService.getUrlaubstageByAbteilung(abteilung.getId());
+		List<UrlaubstagDto> urlaubstage = (abteilung != null)
+				? urlaubstagService.getUrlaubstageByAbteilung(abteilung.getId())
+				: urlaubstagService.getUrlaubstage();
 
-		model.addAttribute("abteilungsname", abteilung.getName());
+		model.addAttribute("abteilungsname", abteilung != null ? abteilung.getName() : "Alle Mitarbeiter");
 		model.addAttribute("urlaubstage", urlaubstage);
 		return "common/antraege-tabelle :: antraegeTabelle";
 	}
